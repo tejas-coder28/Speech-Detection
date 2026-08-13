@@ -1,0 +1,47 @@
+# Virtual Environment
+venv311/
+venv/
+.venv/
+env/
+ENV/
+
+# Python Cache & Compiled Files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Sensitive User Data & Isolation Folders
+database/
+recordings/
+test_logs/
+users.json
+*.csv
+
+# Models & Embeddings
+pretrained_models/
+*.pkl
+*.pth
+*.onnx
+
+# Audio Files & Generated TTS Cache
+*.wav
+*.mp3
+*.m4a
+*.flac
+*.ogg
+*.webm
+*.mp4
+static/tts/
+tts_cache/
+
+# Environment Secrets & Logs
+.env
+*.log
+*.zip
+
+# IDE & OS Junk
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

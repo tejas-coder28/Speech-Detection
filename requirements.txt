@@ -1,0 +1,22 @@
+# Web server
+flask
+gunicorn
+
+# Core ML / audio
+speechbrain
+torch
+torchaudio
+
+# Audio I/O
+sounddevice
+soundfile
+av
+
+# Signal processing
+scipy
+numpy
+noisereduce
+
+# Text to speech
+pyttsx3
+

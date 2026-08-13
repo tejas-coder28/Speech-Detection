@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="blue">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Analytics Dashboard - Speaker Recognition</title>
+  <meta name="description" content="Verification accuracy and speaker roster analytics for your voice biometric account." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root, [data-theme="blue"], [data-theme="deep"] {
+      --bg-base:       linear-gradient(135deg, #0A0D18 0%, #0F172A 50%, #080B14 100%);
+      --surface:       rgba(18, 24, 40, 0.85);
+      --border:        rgba(56, 189, 248, 0.25);
+      --text:          #f0f9ff;
+      --overlay1:      #64748b;
+      --accent:        #0ea5e9;
+      --accent-light:  #38bdf8;
+      --emerald:       #10b981;
+      --amber:         #f59e0b;
+      --ruby:          #dc2626;
+      --font-ui:       'Inter', system-ui, sans-serif;
+    }
+    [data-theme="red"] {
+      --bg-base:       linear-gradient(135deg, #1A090B 0%, #2A0D12 50%, #120507 100%);
+      --surface:       rgba(38, 18, 22, 0.85);
+      --border:        rgba(239, 68, 68, 0.25);
+      --text:          #fef2f2;
+      --overlay1:      #9ca3af;
+      --accent:        #ef4444;
+      --accent-light:  #f87171;
+    }
+    [data-theme="green"] {
+      --bg-base:       linear-gradient(135deg, #061712 0%, #0B251D 50%, #04100C 100%);
+      --surface:       rgba(15, 32, 26, 0.85);
+      --border:        rgba(16, 185, 129, 0.25);
+      --text:          #ecfdf5;
+      --overlay1:      #6b7280;
+      --accent:        #10b981;
+      --accent-light:  #4ade80;
+    }
+    [data-theme="yellow"] {
+      --bg-base:       linear-gradient(135deg, #181404 0%, #282008 50%, #100D02 100%);
+      --surface:       rgba(32, 26, 12, 0.85);
+      --border:        rgba(250, 204, 21, 0.28);
+      --text:          #fefce8;
+      --overlay1:      #9ca3af;
+      --accent:        #facc15;
+      --accent-light:  #fef08a;
+    }
+
+    body {
+      font-family: var(--font-ui);
+      background: var(--bg-base);
+      color: var(--text);
+      min-height: 100vh;
+      padding: 0 0 60px;
+    }
+
+    /* Header */
+    .stats-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 28px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      backdrop-filter: blur(12px);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    .stats-header h1 {
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      color: var(--accent-light);
+    }
+    .stats-header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 0.78rem;
+      color: var(--overlay1);
+    }
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255,255,255,0.07);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.8rem;
+      padding: 6px 14px;
+      text-decoration: none;
+      transition: background 0.15s;
+    }
+    .back-btn:hover { background: rgba(255,255,255,0.13); }
+
+    /* Main grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 920px;
+      margin: 28px auto 0;
+      padding: 0 20px;
+    }
+    @media (max-width: 680px) {
+      .stats-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Stat card */
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px 24px;
+      backdrop-filter: blur(12px);
+    }
+    .stat-card.wide { grid-column: 1 / -1; }
+
+    .stat-card-title {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--overlay1);
+      margin-bottom: 6px;
+    }
+    .stat-card-note {
+      font-size: 0.7rem;
+      color: var(--overlay1);
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+
+    /* KPI numbers */
+    .kpi-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      margin-bottom: 16px;
+    }
+    .kpi-block { display: flex; flex-direction: column; gap: 2px; }
+    .kpi-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--accent-light);
+      line-height: 1;
+    }
+    .kpi-label { font-size: 0.7rem; color: var(--overlay1); }
+
+    /* Speaker chips */
+    .speaker-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .speaker-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.72rem;
+      padding: 3px 10px;
+      color: var(--accent-light);
+    }
+
+    /* Empty state */
+    .empty-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 36px 0;
+      color: var(--overlay1);
+      font-size: 0.85rem;
+    }
+    .empty-state-icon { font-size: 2rem; }
+
+    /* Chart canvas */
+    .chart-wrap { position: relative; height: 220px; }
+
+    /* Footer note */
+    .stats-footer {
+      text-align: center;
+      margin-top: 36px;
+      font-size: 0.7rem;
+      color: var(--overlay1);
+    }
+  </style>
+</head>
+<body>
+
+  <header class="stats-header">
+    <h1>Analytics Dashboard</h1>
+    <div class="stats-header-right">
+      <span>tejasmuralidhar2@gmail.com</span>
+      <a href="/" class="back-btn">Back to Dashboard</a>
+    </div>
+  </header>
+
+  <div class="stats-grid">
+
+    <!-- KPI summary -->
+    <div class="stat-card">
+      <div class="stat-card-title">Roster Overview</div>
+      <div class="kpi-row">
+        <div class="kpi-block">
+          <span class="kpi-value">41</span>
+          <span class="kpi-label">Enrolled speakers</span>
+        </div>
+        <div class="kpi-block">
+          <span class="kpi-value">149</span>
+          <span class="kpi-label">Verification Runs</span>
+        </div>
+        <div class="kpi-block">
+          <span class="kpi-value" style="color: var(--emerald);">9</span>
+          <span class="kpi-label">Successful</span>
+        </div>
+        <div class="kpi-block">
+          <span class="kpi-value" style="color: var(--ruby);">1</span>
+          <span class="kpi-label">Failed</span>
+        </div>
+      </div>
+      
+      <div class="speaker-chips">
+        
+        <span class="speaker-chip">Rajnikanth</span>
+        
+        <span class="speaker-chip">Dr Rajkumar</span>
+        
+        <span class="speaker-chip">Sudeep</span>
+        
+        <span class="speaker-chip">Mr Tejas</span>
+        
+        <span class="speaker-chip">Darshan</span>
+        
+        <span class="speaker-chip">Puneeth Rajkumar</span>
+        
+        <span class="speaker-chip">Yash</span>
+        
+        <span class="speaker-chip">Dr Vishnuvardhan</span>
+        
+        <span class="speaker-chip">Shankar Nag</span>
+        
+        <span class="speaker-chip">Alex</span>
+        
+        <span class="speaker-chip">Shivank</span>
+        
+        <span class="speaker-chip">Serafina</span>
+        
+        <span class="speaker-chip">Thomas</span>
+        
+        <span class="speaker-chip">Dynamite</span>
+        
+        <span class="speaker-chip">Emma</span>
+        
+        <span class="speaker-chip">Chintu</span>
+        
+        <span class="speaker-chip">Marshall</span>
+        
+        <span class="speaker-chip">Rusty</span>
+        
+        <span class="speaker-chip">John</span>
+        
+        <span class="speaker-chip">Yashas</span>
+        
+        <span class="speaker-chip">Jamal</span>
+        
+        <span class="speaker-chip">Larry</span>
+        
+        <span class="speaker-chip">Alice</span>
+        
+        <span class="speaker-chip">Monika</span>
+        
+        <span class="speaker-chip">Philip</span>
+        
+        <span class="speaker-chip">Manav</span>
+        
+        <span class="speaker-chip">Adina</span>
+        
+        <span class="speaker-chip">Bunty</span>
+        
+        <span class="speaker-chip">Aaditya</span>
+        
+        <span class="speaker-chip">Vedish</span>
+        
+        <span class="speaker-chip">Juan</span>
+        
+        <span class="speaker-chip">Charles</span>
+        
+        <span class="speaker-chip">Hale</span>
+        
+        <span class="speaker-chip">Martin</span>
+        
+        <span class="speaker-chip">Konoha</span>
+        
+        <span class="speaker-chip">Arcades</span>
+        
+        <span class="speaker-chip">Hope</span>
+        
+        <span class="speaker-chip">Jofra</span>
+        
+        <span class="speaker-chip">Nakul</span>
+        
+        <span class="speaker-chip">Ken</span>
+        
+        <span class="speaker-chip">Dr Muralidhara</span>
+        
+      </div>
+      
+    </div>
+
+    <!-- Attempts per speaker bar chart -->
+    <div class="stat-card">
+      <div class="stat-card-title">Attempts per Speaker</div>
+      <div class="stat-card-note">Total verification attempts logged per speaker</div>
+      <div class="chart-wrap" id="attemptsWrap">
+        <canvas id="attemptsChart"></canvas>
+      </div>
+      <div class="empty-state hidden" id="attemptsEmpty">
+        <span>No verification test data yet.</span>
+      </div>
+    </div>
+
+    <!-- Accuracy over time (wide) -->
+    <div class="stat-card wide">
+      <div class="stat-card-title">Verification Accuracy Over Time</div>
+      <div class="stat-card-note">Historical verification match rate across all attempts</div>
+      <div class="chart-wrap" id="accuracyWrap">
+        <canvas id="accuracyChart"></canvas>
+      </div>
+      <div class="empty-state hidden" id="accuracyEmpty">
+        <span>No verification test data yet. Run verification attempts to view accuracy trends.</span>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="stats-footer">All data is scoped exclusively to your account - Speaker Recognition System</p>
+
+  <script>
+    const _cs = getComputedStyle(document.documentElement);
+    const ACCENT      = _cs.getPropertyValue('--accent').trim()       || '#3b82f6';
+    const ACCENT_LIGHT= _cs.getPropertyValue('--accent-light').trim() || '#60a5fa';
+    const EMERALD     = '#10b981';
+    const AMBER       = '#f59e0b';
+    const GRID_COLOR  = 'rgba(255,255,255,0.06)';
+    const TEXT_COLOR  = _cs.getPropertyValue('--overlay1').trim()      || '#94a3b8';
+
+    const chartDefaults = {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { labels: { color: TEXT_COLOR, font: { size: 11 } } }
+      },
+      scales: {
+        x: { ticks: { color: TEXT_COLOR, font: { size: 10 } }, grid: { color: GRID_COLOR } },
+        y: { ticks: { color: TEXT_COLOR, font: { size: 10 } }, grid: { color: GRID_COLOR } }
+      }
+    };
+
+    /* -- Accuracy Chart ------------------------------------------------- */
+    const accuracyLabels = ["2026-08-03", "2026-08-04", "2026-08-05", "2026-08-06", "2026-08-08"];
+    const accuracyData   = [62.5, 84.6, 66.7, 82.7, 90.0];
+
+    if (accuracyLabels.length === 0) {
+      document.getElementById('accuracyWrap').classList.add('hidden');
+      document.getElementById('accuracyEmpty').classList.remove('hidden');
+    } else {
+      new Chart(document.getElementById('accuracyChart'), {
+        type: 'line',
+        data: {
+          labels: accuracyLabels,
+          datasets: [{
+            label: 'Accuracy %',
+            data: accuracyData,
+            borderColor: EMERALD,
+            backgroundColor: 'rgba(16,185,129,0.12)',
+            pointBackgroundColor: EMERALD,
+            pointRadius: 5,
+            tension: 0.35,
+            fill: true
+          }]
+        },
+        options: {
+          ...chartDefaults,
+          scales: {
+            ...chartDefaults.scales,
+            y: { ...chartDefaults.scales.y, min: 0, max: 100,
+                 ticks: { ...chartDefaults.scales.y.ticks, callback: v => v + '%' } }
+          }
+        }
+      });
+    }
+
+    /* -- Attempts per Speaker Chart ------------------------------------ */
+    const attemptsBySpkRaw = {"Rajnikanth": 1, "Dr Rajkumar": 2, "Sudeep": 3, "Mr Tejas": 10, "Darshan": 10, "Puneeth Rajkumar": 1, "Yash": 2, "Dr Vishnuvardhan": 1, "Shankar Nag": 1, "Alex": 5, "Shivank": 4, "Serafina": 4, "Thomas": 5, "Dynamite": 4, "Emma": 12, "Chintu": 5, "Marshall": 3, "Rusty": 3, "John": 7, "Yashas": 5, "Jamal": 2, "Larry": 2, "Alice": 2, "Monika": 2, "Philip": 2, "Manav": 3, "Adina": 1, "Bunty": 5, "Aaditya": 4, "Vedish": 0, "Juan": 7, "Charles": 3, "Hale": 2, "Martin": 1, "Konoha": 3, "Arcades": 3, "Hope": 3, "Jofra": 5, "Nakul": 3, "Ken": 2, "Dr Muralidhara": 1, "alex": 3};
+    const spkKeys   = Object.keys(attemptsBySpkRaw);
+    const spkValues = Object.values(attemptsBySpkRaw);
+
+    if (spkKeys.length === 0) {
+      document.getElementById('attemptsWrap').classList.add('hidden');
+      document.getElementById('attemptsEmpty').classList.remove('hidden');
+    } else {
+      new Chart(document.getElementById('attemptsChart'), {
+        type: 'bar',
+        data: {
+          labels: spkKeys,
+          datasets: [{
+            label: 'Test Attempts',
+            data: spkValues,
+            backgroundColor: spkKeys.map((_, i) =>
+              ['rgba(59,130,246,0.7)','rgba(139,92,246,0.7)','rgba(16,185,129,0.7)',
+               'rgba(245,158,11,0.7)','rgba(236,72,153,0.7)'][i % 5]
+            ),
+            borderRadius: 6
+          }]
+        },
+        options: {
+          ...chartDefaults,
+          plugins: { ...chartDefaults.plugins, legend: { display: false } },
+          scales: {
+            ...chartDefaults.scales,
+            y: { ...chartDefaults.scales.y, beginAtZero: true,
+                 ticks: { ...chartDefaults.scales.y.ticks, stepSize: 1 } }
+          }
+        }
+      });
+    }
+  </script>
+</body>
+</html>

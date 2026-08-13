@@ -1,0 +1,3867 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0EA5E9" />
+  <link rel="manifest" href="{{ url_for('static', filename='manifest.json') }}" />
+  <title>Voiceprint Identity System</title>
+  <meta name="description"
+    content="AI-powered speaker recognition using ECAPA-TDNN embeddings - enroll and identify voices in your browser." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <style>
+    /* ------ Theme Systems (Blue, Red, Green, Yellow, White) ------------------------------------------------------------- */
+    :root, :root[data-theme="blue"], :root[data-theme="deep"] {
+      --theme-accent-light: #38BDF8;
+      --theme-accent: #0EA5E9;
+      --theme-accent-strong: #0369A1;
+      --theme-accent-glow: rgba(56, 189, 248, 0.4);
+      --theme-accent-border: rgba(56, 189, 248, 0.35);
+
+      --body-bg: linear-gradient(135deg, #0A0D18 0%, #0F172A 50%, #080B14 100%);
+      --card-bg: rgba(18, 24, 40, 0.75);
+      --card-border: rgba(56, 189, 248, 0.25);
+      --card-glow: var(--theme-accent-glow);
+      --blob-color-1: #0EA5E9;
+      --blob-color-2: #38BDF8;
+      --blob-color-3: #0284C7;
+      --blob-opacity: 0.25;
+      --body-before-opacity: 1;
+
+      --text: #F0F9FF;
+      --subtext: #BAE6FD;
+      --overlay1: #7F849C;
+      --btn-text: #FFFFFF;
+
+      --accent-light: var(--theme-accent-light);
+      --accent: var(--theme-accent);
+      --accent-strong: var(--theme-accent-strong);
+      --danger: #F87171;
+      --danger-bg: rgba(248,113,113,0.12);
+      --danger-border: rgba(248,113,113,0.25);
+      --emerald: #50C878;
+      --ruby: var(--danger);
+      --amber: #FFBF00;
+      --amethyst: var(--accent);
+      --rose: var(--danger);
+    }
+
+    :root[data-theme="red"] {
+      --theme-accent-light: #F87171;
+      --theme-accent: #EF4444;
+      --theme-accent-strong: #B91C1C;
+      --theme-accent-glow: rgba(239, 68, 68, 0.4);
+      --theme-accent-border: rgba(239, 68, 68, 0.35);
+
+      --body-bg: linear-gradient(135deg, #1A090B 0%, #2A0D12 50%, #120507 100%);
+      --card-bg: rgba(38, 18, 22, 0.75);
+      --card-border: rgba(239, 68, 68, 0.25);
+      --card-glow: var(--theme-accent-glow);
+      --blob-color-1: #EF4444;
+      --blob-color-2: #F87171;
+      --blob-color-3: #991B1B;
+      --blob-opacity: 0.25;
+
+      --text: #FEF2F2;
+      --subtext: #FECACA;
+      --overlay1: #9CA3AF;
+      --btn-text: #FFFFFF;
+
+      --accent-light: var(--theme-accent-light);
+      --accent: var(--theme-accent);
+      --accent-strong: var(--theme-accent-strong);
+    }
+
+    :root[data-theme="green"] {
+      --theme-accent-light: #4ADE80;
+      --theme-accent: #10B981;
+      --theme-accent-strong: #047857;
+      --theme-accent-glow: rgba(16, 185, 129, 0.4);
+      --theme-accent-border: rgba(16, 185, 129, 0.35);
+
+      --body-bg: linear-gradient(135deg, #061712 0%, #0B251D 50%, #04100C 100%);
+      --card-bg: rgba(15, 32, 26, 0.75);
+      --card-border: rgba(16, 185, 129, 0.25);
+      --card-glow: var(--theme-accent-glow);
+      --blob-color-1: #10B981;
+      --blob-color-2: #4ADE80;
+      --blob-color-3: #065F46;
+      --blob-opacity: 0.25;
+
+      --text: #ECFDF5;
+      --subtext: #A7F3D0;
+      --overlay1: #6B7280;
+      --btn-text: #FFFFFF;
+
+      --accent-light: var(--theme-accent-light);
+      --accent: var(--theme-accent);
+      --accent-strong: var(--theme-accent-strong);
+    }
+
+    :root[data-theme="yellow"] {
+      --theme-accent-light: #FEF08A;
+      --theme-accent: #FACC15;
+      --theme-accent-strong: #CA8A04;
+      --theme-accent-glow: rgba(250, 204, 21, 0.4);
+      --theme-accent-border: rgba(250, 204, 21, 0.35);
+
+      --body-bg: linear-gradient(135deg, #181404 0%, #282008 50%, #100D02 100%);
+      --card-bg: rgba(32, 26, 12, 0.75);
+      --card-border: rgba(250, 204, 21, 0.28);
+      --card-glow: var(--theme-accent-glow);
+      --blob-color-1: #FACC15;
+      --blob-color-2: #FEF08A;
+      --blob-color-3: #854D0E;
+      --blob-opacity: 0.25;
+
+      --text: #FEFCE8;
+      --subtext: #FEF08A;
+      --overlay1: #9CA3AF;
+      --btn-text: #000000;
+
+      --accent-light: var(--theme-accent-light);
+      --accent: var(--theme-accent);
+      --accent-strong: var(--theme-accent-strong);
+    }
+
+    [data-theme="yellow"] .btn-primary,
+    [data-theme="yellow"] .btn-verify {
+      color: #000000;
+      font-weight: 700;
+    }
+
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--body-bg, #0A0A0F);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px 48px;
+      position: relative;
+      overflow-x: hidden;
+      transition: background 0.4s ease, color 0.4s ease;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 15% 20%, var(--theme-accent-glow) 0%, transparent 45%),
+        radial-gradient(circle at 85% 15%, var(--theme-accent-border) 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, var(--theme-accent-glow) 0%, transparent 50%);
+      filter: blur(60px);
+      opacity: var(--body-before-opacity, 1);
+      pointer-events: none;
+      transition: opacity 0.4s ease, background 0.4s ease;
+    }
+
+    /* ------ Ambient Background Blobs --------------------------------------------------------------------------------------------------------- */
+    .bg-blobs {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: var(--blob-opacity, 0.22);
+      animation: floatBlob 25s ease-in-out infinite alternate;
+      transition: opacity 0.4s ease, background 0.4s ease;
+    }
+
+    .blob-1 {
+      width: 550px;
+      height: 550px;
+      background: var(--blob-color-1, #0EA5E9);
+      top: -120px;
+      left: -100px;
+    }
+
+    .blob-2 {
+      width: 650px;
+      height: 650px;
+      background: var(--blob-color-2, #38BDF8);
+      bottom: -150px;
+      right: -120px;
+      animation-delay: -10s;
+      animation-duration: 32s;
+    }
+
+    .blob-3 {
+      width: 450px;
+      height: 450px;
+      background: var(--blob-color-3, #0284C7);
+      top: 35%;
+      right: 15%;
+      animation-delay: -5s;
+      animation-duration: 22s;
+    }
+
+    @keyframes floatBlob {
+      0% {
+        transform: translate(0, 0) scale(1);
+      }
+
+      50% {
+        transform: translate(60px, 40px) scale(1.08);
+      }
+
+      100% {
+        transform: translate(-40px, 80px) scale(0.95);
+      }
+    }
+
+    /* ------ Layout Container --------------------------------------------------------------------------------------------------------------------------------- */
+    .app {
+      width: 100%;
+      max-width: 560px;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+    }
+
+    /* ------ Header ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+    .header {
+      padding: 12px 8px 14px;
+      text-align: center;
+      position: relative;
+      min-width: 0;
+    }
+
+    /* Logout button - repositioned to footer */
+    .logout-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: transparent;
+      border: 1px solid var(--theme-accent-border);
+      color: var(--subtext);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      padding: 5px 13px;
+      border-radius: 999px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.2s ease;
+    }
+
+    .logout-btn:hover {
+      background: var(--theme-accent-glow);
+      border-color: var(--theme-accent-light);
+      color: var(--text);
+    }
+
+    .logout-user {
+      font-size: 0.72rem;
+      color: var(--subtext);
+    }
+
+    .header-title,
+    h1,
+    .header h1 {
+      white-space: nowrap;
+      font-size: clamp(1.4rem, 3.2vw, 2rem);
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      background: linear-gradient(135deg, #FFFFFF 0%, var(--text) 50%, var(--theme-accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-shadow: 0 0 30px var(--theme-accent-glow);
+      margin-bottom: 6px;
+    }
+
+    .header .subtitle {
+      font-size: 0.8rem;
+      color: var(--subtext);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      opacity: 0.85;
+    }
+
+    /* ------ Status Bar ------------------------------------------------------------------------------------------------------------------------------------------------ */
+    .status-bar {
+      display: inline-flex;
+      align-self: center;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px 18px;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(24px) saturate(160%);
+      -webkit-backdrop-filter: blur(24px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-top: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 999px;
+      margin-bottom: 14px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    .badge {
+      font-size: 1rem;
+      line-height: 1;
+      transition: color 0.3s ease, text-shadow 0.3s ease;
+    }
+
+    .badge.pulsing {
+      animation: glowPulse 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glowPulse {
+      0% {
+        opacity: 0.4;
+        transform: scale(0.9);
+        text-shadow: 0 0 0px currentColor;
+      }
+
+      100% {
+        opacity: 1;
+        transform: scale(1.2);
+        text-shadow: 0 0 14px currentColor;
+      }
+    }
+
+    .status-msg {
+      font-size: 0.86rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      transition: color 0.3s ease;
+    }
+
+    /* ------ Divider --------------------------------------------------------------------------------------------------------------------------------------------------------- */
+    .divider {
+      display: none;
+      /* Soft gap spacing used instead of hard lines */
+    }
+
+    .card {
+      background: var(--card-bg, rgba(255,255,255,0.08));
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid var(--card-border, rgba(255,255,255,0.18));
+      border-radius: 24px;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      position: relative;
+      z-index: 1;
+      overflow: hidden;
+      padding: 24px 26px;
+      margin-bottom: 12px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease, border-color 0.3s ease, background 0.4s ease;
+      animation: cardAppear 0.5s ease-out backwards;
+    }
+
+    /* the glossy diagonal shine seen in the reference image */
+    .card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0.03) 30%,
+          transparent 60%);
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-2px);
+      border-color: var(--card-glow, rgba(56,189,248,0.4));
+      box-shadow: 0 24px 48px rgba(0,0,0,0.5), 0 0 24px var(--card-glow, rgba(56,189,248,0.4)), inset 0 1px 0 rgba(255,255,255,0.15);
+    }
+
+    /* ------ Waveform Border Chrome on Cards ------------------------------------------------------------------------------------------ */
+    .card-waveform-chrome {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 18px;
+      pointer-events: none;
+      overflow: hidden;
+      opacity: 0.55;
+      transition: opacity 0.3s ease;
+    }
+
+    .card:hover .card-waveform-chrome {
+      opacity: 0.95;
+    }
+
+    .waveform-path-bg {
+      stroke: var(--theme-accent-border);
+      stroke-dasharray: 8 4;
+      animation: waveFlow 15s linear infinite;
+    }
+
+    @keyframes waveFlow {
+      0% {
+        stroke-dashoffset: 0;
+      }
+
+      100% {
+        stroke-dashoffset: 200;
+      }
+    }
+
+    /* ------ Radial Voice-Scan Ring --------------------------------------------------------------------------------------------------------------------------- */
+    .scan-ring-container {
+      position: relative;
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .scan-ring-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      filter: drop-shadow(0 0 8px var(--theme-accent-glow));
+    }
+
+    .ring-track {
+      stroke: var(--theme-accent-border);
+      animation: scanPulse 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes scanPulse {
+      0% {
+        stroke-opacity: 0.2;
+      }
+
+      100% {
+        stroke-opacity: 0.6;
+      }
+    }
+
+    .ring-progress {
+      stroke: var(--accent-strong);
+      transition: stroke-dashoffset 0.15s linear, stroke 0.3s ease;
+    }
+
+    .scan-ring-icon {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      font-size: 1.5rem;
+    }
+
+    /* ------ Spectrogram Identity Seals ------------------------------------------------------------------------------------------------------------ */
+    .speaker-name-seal-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .spectrogram-seal {
+      display: inline-flex;
+      align-items: flex-end;
+      gap: 2px;
+      width: 32px;
+      height: 18px;
+      padding: 2px 3px;
+      background: var(--theme-accent-glow);
+      border: 1px solid var(--theme-accent-border);
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .spec-bar {
+      flex: 1;
+      background: var(--theme-accent-light);
+      border-radius: 1px;
+    }
+
+    @keyframes cardAppear {
+      from {
+        opacity: 0;
+        transform: translateY(16px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .card-title {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .card-title .num {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: var(--theme-accent-glow);
+      border: 1px solid var(--theme-accent-border);
+      border-radius: 50%;
+      font-size: 0.75rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .body-text {
+      font-size: 0.85rem;
+      color: var(--subtext);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+
+    /* ------ Inputs ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+    .row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    label.field-label {
+      font-size: 0.85rem;
+      color: var(--subtext);
+      white-space: nowrap;
+      font-weight: 500;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.35);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 999px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      padding: 10px 18px;
+      outline: none;
+      transition: all 0.25s ease;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--theme-accent-light);
+      box-shadow: 0 0 15px var(--theme-accent-glow), inset 0 1px 2px rgba(0, 0, 0, 0.5);
+      background: rgba(0, 0, 0, 0.5);
+    }
+
+    input[type="text"]:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ------ Pill-Shaped Glass Buttons ------------------------------------------------------------------------------------------------------ */
+    .btn {
+      border: none;
+      border-radius: 999px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+      position: relative;
+      overflow: hidden;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .btn:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+      border: 1px solid var(--theme-accent-border);
+      color: var(--btn-text, #FFFFFF);
+      font-size: 0.88rem;
+      padding: 10px 22px;
+      box-shadow: 0 4px 15px var(--theme-accent-glow);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--accent), var(--theme-accent-light));
+      border-color: var(--theme-accent-light);
+      box-shadow: 0 6px 20px var(--theme-accent-glow);
+      transform: scale(1.02);
+    }
+
+    .btn-verify {
+      flex: 1;
+      background: linear-gradient(135deg, var(--accent-strong), var(--accent));
+      border: 1px solid var(--theme-accent-border);
+      color: var(--btn-text, #FFFFFF);
+      font-size: 0.95rem;
+      padding: 14px 0;
+      width: 100%;
+      box-shadow: 0 4px 20px var(--theme-accent-glow);
+    }
+
+    .btn-verify:hover:not(:disabled) {
+      background: linear-gradient(135deg, var(--accent), var(--theme-accent-light));
+      border-color: var(--theme-accent-light);
+      box-shadow: 0 8px 25px var(--theme-accent-glow);
+      transform: scale(1.015);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid rgba(205, 214, 244, 0.3);
+      color: var(--subtext);
+      font-size: 0.88rem;
+      padding: 10px 22px;
+      border-radius: 999px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .btn-ghost:hover:not(:disabled) {
+      background: rgba(205, 214, 244, 0.1);
+      border-color: rgba(205, 214, 244, 0.6);
+      color: var(--text);
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      border: 1px solid var(--danger-border);
+      color: var(--danger);
+      font-size: 0.78rem;
+      padding: 8px 18px;
+      box-shadow: 0 4px 12px rgba(248, 113, 113, 0.15);
+    }
+
+    .btn-danger:hover:not(:disabled) {
+      background: rgba(248, 113, 113, 0.22);
+      border-color: rgba(248, 113, 113, 0.45);
+      box-shadow: 0 6px 18px rgba(248, 113, 113, 0.25);
+      transform: scale(1.02);
+    }
+
+    /* ------ Shimmer Progress Bars ------------------------------------------------------------------------------------------------------------------ */
+    .progress-wrap {
+      margin-top: 16px;
+    }
+
+    .progress-label {
+      font-size: 0.8rem;
+      color: var(--subtext);
+      margin-bottom: 8px;
+    }
+
+    .progress-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 999px;
+      overflow: hidden;
+      height: 6px;
+      border: 1px solid var(--theme-accent-border);
+      position: relative;
+    }
+
+    .progress-bar {
+      height: 100%;
+      border-radius: 999px;
+      width: 0%;
+      transition: width 0.15s linear;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.35) 50%, transparent 100%);
+      animation: shimmer 1.8s infinite;
+    }
+
+    @keyframes shimmer {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(100%);
+      }
+    }
+
+    .progress-bar.enroll-bar {
+      background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+    }
+
+    .progress-bar.rec-bar {
+      background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+    }
+
+    .progress-bar.conf-bar {
+      background: linear-gradient(90deg, var(--accent-strong), var(--accent));
+      transition: width 0.4s ease, background 0.3s ease;
+    }
+
+    .progress-wrap.hidden {
+      display: none;
+    }
+
+    /* ------ Result Card --------------------------------------------------------------------------------------------------------------------------------------------- */
+    .result-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 8px;
+    }
+
+    .result-key {
+      font-size: 0.85rem;
+      color: var(--subtext);
+      min-width: 90px;
+    }
+
+    .result-val {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      transition: color 0.3s ease;
+    }
+
+    .result-score {
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--amber);
+      transition: color 0.3s ease;
+    }
+
+    /* ------ Circular Confidence Gauge ------------------------------------------------------------------------------------------------------ */
+    .conf-gauge-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: 12px auto 8px;
+    }
+    .conf-gauge-svg {
+      width: 90px;
+      height: 90px;
+      filter: drop-shadow(0 0 8px var(--theme-accent-glow));
+      transition: filter 0.3s ease;
+    }
+    .conf-gauge-track {
+      stroke: var(--theme-accent-border);
+    }
+    .conf-gauge-fill {
+      stroke: var(--accent);
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.55s cubic-bezier(0.4,0,0.2,1), stroke 0.3s ease;
+    }
+    .conf-gauge-pct {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      fill: var(--text);
+      transition: fill 0.3s ease;
+    }
+    .conf-gauge-label {
+      font-size: 0.7rem;
+      fill: var(--subtext);
+      letter-spacing: 0.08em;
+    }
+
+    /* ------ Footer ------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+    .footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 8px 0;
+    }
+
+    .footer-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ------ 5-Swatch Theme Picker --------------------------------------------------------------------------------------- */
+    .theme-picker {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      padding: 5px 10px;
+      border-radius: 999px;
+    }
+
+    .theme-swatch {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      outline: none;
+      padding: 0;
+    }
+
+    .theme-swatch:hover {
+      transform: scale(1.25);
+    }
+
+    .theme-swatch.active {
+      border-color: #FFFFFF;
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.5), 0 0 0 4px #FFFFFF;
+      transform: scale(1.15);
+    }
+
+    .swatch-blue   { background: #0EA5E9; }
+    .swatch-red    { background: #EF4444; }
+    .swatch-green  { background: #10B981; }
+    .swatch-yellow { background: #FACC15; }
+
+    /* ------ Cancel & Retry Button ------------------------------------------------------------------------------------------------------------------ */
+    .btn-cancel-retry {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--subtext);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.76rem;
+      font-weight: 600;
+      padding: 5px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-cancel-retry:hover {
+      background: rgba(196, 30, 58, 0.25);
+      border-color: rgba(196, 30, 58, 0.6);
+      color: #FFD4D8;
+    }
+
+    .btn-cancel-retry.hidden {
+      display: none;
+    }
+
+    /* ------ Custom Glass Modal Dialog Overlay --------------------------------------------------------------------------- */
+    .glass-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 10, 12, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.25s ease;
+      padding: 20px;
+    }
+
+    .glass-modal-overlay.hidden {
+      display: none;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .glass-modal-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 24px;
+      padding: 30px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      text-align: center;
+      animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .glass-modal-card::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0.03) 30%,
+          transparent 60%);
+      pointer-events: none;
+    }
+
+    @keyframes modalSlide {
+      from {
+        transform: translateY(20px) scale(0.96);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+    }
+
+    .glass-modal-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      letter-spacing: 0.02em;
+    }
+
+    .glass-modal-title.speaker-id {
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: 0.08em;
+      border-bottom: 2px solid var(--theme-accent-light);
+      padding-bottom: 8px;
+      margin-bottom: 16px;
+      display: block;
+      width: 100%;
+    }
+
+    .glass-modal-body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      line-height: 1.55;
+      white-space: pre-line;
+      margin-bottom: 24px;
+    }
+
+    .glass-modal-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+
+    /* ------ Speaker Management Panel ------------------------------------------------------------------------------------------------------ */
+    .speaker-panel-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 8000;
+      background: rgba(0, 0, 0, 0.35);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      transition: opacity 0.2s ease;
+      padding: 20px;
+    }
+
+    .speaker-panel-overlay.hidden {
+      display: none;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .speaker-panel {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 24px;
+      padding: 0;
+      width: 100%;
+      max-width: 380px;
+      box-shadow:
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .speaker-panel::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(135deg,
+          rgba(255, 255, 255, 0.15) 0%,
+          rgba(255, 255, 255, 0.03) 30%,
+          transparent 60%);
+      pointer-events: none;
+    }
+
+    .speaker-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 22px 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    }
+
+    .speaker-panel-header h3 {
+      font-family: 'Cormorant Garamond', Georgia, serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #E0F2FE;
+      margin: 0;
+    }
+
+    .speaker-panel-close {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--subtext);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.85rem;
+      line-height: 1;
+      transition: all 0.2s ease;
+    }
+
+    .speaker-panel-close:hover {
+      background: rgba(196, 30, 58, 0.2);
+      border-color: rgba(196, 30, 58, 0.5);
+      color: #FFD4D8;
+    }
+
+    /* ------ Speaker Card Grid ------------------------------------------------------------------------------------------------------------------------------ */
+    .speaker-list {
+      list-style: none;
+      margin: 0;
+      padding: 10px 14px;
+      max-height: 280px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(56, 189, 248, 0.25) transparent;
+      align-content: start;
+    }
+
+    .speaker-list::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    .speaker-list::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .speaker-list::-webkit-scrollbar-thumb {
+      background: rgba(56, 189, 248, 0.25);
+      border-radius: 10px;
+    }
+
+    .speaker-item-wrapper {
+      padding: 0;
+      transition: none;
+    }
+
+    .speaker-item {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 10px 12px;
+      transition: background 0.2s, border-color 0.2s, transform 0.18s;
+    }
+
+    .speaker-item:hover {
+      background: rgba(56,189,248,0.08);
+      border-color: rgba(56,189,248,0.35);
+      transform: translateY(-1px);
+    }
+
+    .speaker-display-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .speaker-item-name {
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--text);
+      letter-spacing: 0.01em;
+      word-break: break-word;
+      flex: 1;
+    }
+
+    .speaker-item-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .speaker-item-rename {
+      background: none;
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      color: #7DD3FC;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.75rem;
+      line-height: 1;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .speaker-item-rename:hover {
+      background: rgba(56, 189, 248, 0.2);
+      border-color: #7DD3FC;
+      transform: scale(1.1);
+    }
+
+    .speaker-item-remove {
+      background: none;
+      border: 1px solid rgba(196, 30, 58, 0.3);
+      color: rgba(196, 30, 58, 0.8);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.75rem;
+      line-height: 1;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .speaker-item-remove:hover {
+      background: rgba(196, 30, 58, 0.2);
+      border-color: rgba(196, 30, 58, 0.65);
+      color: #FFD4D8;
+      transform: scale(1.1);
+    }
+
+    .speaker-edit-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .speaker-edit-row.hidden,
+    .speaker-display-row.hidden {
+      display: none;
+    }
+
+    .speaker-edit-input {
+      flex: 1;
+      background: rgba(0, 0, 0, 0.45);
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      border-radius: 8px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.85rem;
+      padding: 4px 10px;
+      outline: none;
+    }
+
+    .speaker-edit-input:focus {
+      border-color: #38BDF8;
+      box-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
+    }
+
+    .speaker-edit-save,
+    .speaker-edit-cancel {
+      background: none;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: var(--text);
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 0.8rem;
+      line-height: 1;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .speaker-edit-save {
+      border-color: rgba(80, 200, 120, 0.5);
+      color: var(--emerald);
+    }
+
+    .speaker-edit-save:hover {
+      background: rgba(80, 200, 120, 0.25);
+    }
+
+    .speaker-edit-cancel {
+      border-color: rgba(196, 30, 58, 0.4);
+      color: #FFD4D8;
+    }
+
+    .speaker-edit-cancel:hover {
+      background: rgba(196, 30, 58, 0.25);
+    }
+
+    .speaker-edit-error {
+      font-size: 0.76rem;
+      color: #FF7070;
+      margin-top: 4px;
+      width: 100%;
+    }
+
+    .speaker-edit-error.hidden {
+      display: none;
+    }
+
+
+    .speaker-item-empty {
+      padding: 20px 22px;
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--overlay1);
+      font-style: italic;
+    }
+
+    .speaker-panel-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.07);
+      margin: 0;
+    }
+
+    .speaker-panel-footer {
+      padding: 8px 10px 12px;
+    }
+
+    .speaker-reset-all {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      background: linear-gradient(135deg, rgba(196, 30, 58, 0.18) 0%, rgba(196, 30, 58, 0.05) 100%);
+      border: 1px solid rgba(196, 30, 58, 0.35);
+      border-radius: 14px;
+      color: #FFD4D8;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.82rem;
+      font-weight: 600;
+      padding: 11px 0;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .speaker-reset-all:hover:not(:disabled) {
+      background: linear-gradient(135deg, rgba(196, 30, 58, 0.32) 0%, rgba(196, 30, 58, 0.1) 100%);
+      border-color: rgba(196, 30, 58, 0.65);
+      box-shadow: 0 4px 16px rgba(196, 30, 58, 0.2);
+      transform: scale(1.01);
+    }
+
+    .speaker-reset-all:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+    }
+
+    /* Fade-out animation for removed rows */
+    .speaker-item.removing {
+      animation: fadeSlideOut 0.3s ease forwards;
+    }
+
+    @keyframes fadeSlideOut {
+      to {
+        opacity: 0;
+        height: 0;
+        padding: 0 22px;
+        transform: translateX(20px);
+        overflow: hidden;
+      }
+    }
+
+    /* -- Upload Verify Button ------------------------------------------ */
+    .verify-actions {
+      display: flex;
+      gap: 10px;
+      width: 100%;
+    }
+
+    .verify-actions .btn-verify {
+      flex: 1;
+      padding: 14px 8px;
+    }
+
+    .btn-upload {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid var(--theme-accent-border);
+      border-radius: 999px;
+      color: var(--text);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      padding: 14px 8px;
+      cursor: pointer;
+      transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-upload:hover:not(:disabled) {
+      background: var(--theme-accent-glow);
+      border-color: var(--theme-accent-light);
+      box-shadow: 0 6px 20px var(--theme-accent-glow);
+      transform: scale(1.015);
+    }
+
+    .btn-upload:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    .btn-upload:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+      filter: grayscale(0.5);
+    }
+
+    #uploadFileInput {
+      display: none;
+    }
+
+    .upload-status {
+      text-align: center;
+      font-size: 0.82rem;
+      color: var(--subtext);
+      margin-top: 8px;
+      min-height: 1.2em;
+      transition: color 0.3s ease;
+    }
+
+    .upload-status.error {
+      color: var(--danger);
+    }
+
+    .verify-or {
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: var(--overlay1);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      align-self: center;
+      flex-shrink: 0;
+    }
+
+    /* ------ Waveform Preview Canvas (Client-side) --------------------------------------------------------------------- */
+    .waveform-preview-container {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--theme-accent-border);
+      border-radius: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: all 0.3s ease;
+    }
+
+    .waveform-preview-container.hidden {
+      display: none;
+    }
+
+    .waveform-preview-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.76rem;
+      color: var(--subtext);
+    }
+
+    .waveform-preview-title {
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .waveform-duration {
+      font-family: monospace;
+      color: var(--accent-light);
+      font-weight: 600;
+    }
+
+    .waveform-canvas {
+      width: 100%;
+      height: 44px;
+      display: block;
+      border-radius: 6px;
+    }
+
+    /* ------ Decorative Recording Pulse Animation ------------------------------------------------------------------------ */
+    .recording-pulse-visualizer {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 8px;
+      margin-bottom: 4px;
+      padding: 4px 12px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--theme-accent-border);
+      border-radius: 999px;
+    }
+
+    .recording-pulse-visualizer.hidden {
+      display: none;
+    }
+
+    .pulse-bar {
+      width: 3px;
+      height: 14px;
+      background: var(--accent-light);
+      border-radius: 2px;
+      animation: audioPulse 1.2s ease-in-out infinite alternate;
+    }
+
+    .pulse-bar:nth-child(1) { animation-delay: 0.0s; }
+    .pulse-bar:nth-child(2) { animation-delay: 0.2s; }
+    .pulse-bar:nth-child(3) { animation-delay: 0.4s; }
+    .pulse-bar:nth-child(4) { animation-delay: 0.1s; }
+    .pulse-bar:nth-child(5) { animation-delay: 0.3s; }
+
+    .pulse-text {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      color: var(--accent-light);
+      margin-left: 6px;
+      animation: textPulse 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes audioPulse {
+      0% { transform: scaleY(0.25); opacity: 0.4; }
+      100% { transform: scaleY(1.0); opacity: 1.0; }
+    }
+
+    @keyframes textPulse {
+      0% { opacity: 0.4; }
+      100% { opacity: 1; }
+    }
+
+    /* ------ Uploading Indicator (standalone, outside button) -------------------------------- */
+    #uploadingIndicator {
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+      padding: 8px 16px;
+      background: rgba(14, 165, 233, 0.10);
+      border: 1px solid rgba(56, 189, 248, 0.35);
+      border-radius: 10px;
+      animation: uploadIndicatorFadeIn 0.25s ease;
+    }
+    #uploadingIndicator.visible {
+      display: flex;
+    }
+    @keyframes uploadIndicatorFadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to   { opacity: 1; transform: translateY(0);   }
+    }
+    .uploading-arrow-svg {
+      animation: uploadBounce 0.65s ease-in-out infinite;
+      color: var(--accent-light);
+      flex-shrink: 0;
+    }
+    .uploading-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent-light);
+      animation: uploadingTextPulse 1s ease-in-out infinite alternate;
+    }
+    .uploading-dots span {
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--accent-light);
+      margin: 0 2px;
+      animation: uploadDotBounce 0.9s ease-in-out infinite;
+    }
+    .uploading-dots span:nth-child(2) { animation-delay: 0.15s; }
+    .uploading-dots span:nth-child(3) { animation-delay: 0.30s; }
+    @keyframes uploadBounce {
+      0%   { transform: translateY(0px);  }
+      30%  { transform: translateY(-6px); }
+      55%  { transform: translateY(-2px); }
+      75%  { transform: translateY(-7px); }
+      100% { transform: translateY(0px);  }
+    }
+    @keyframes uploadingTextPulse {
+      0%   { opacity: 0.55; }
+      100% { opacity: 1;    }
+    }
+    @keyframes uploadDotBounce {
+      0%, 100% { transform: translateY(0);    opacity: 0.4; }
+      50%       { transform: translateY(-4px); opacity: 1;   }
+    }
+
+    /* ------ Diagnostic Margin Inspector (Card 3 Result) ------------------------------------------------------ */
+    .margin-inspector-block {
+      margin-top: 14px;
+      padding-top: 12px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .margin-inspector-block.hidden {
+      display: none;
+    }
+
+    .margin-inspector-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      color: var(--subtext);
+    }
+
+    .margin-inspector-key {
+      font-weight: 500;
+      color: var(--subtext);
+      opacity: 0.85;
+    }
+
+    .margin-inspector-val {
+      font-weight: 600;
+      color: var(--text);
+      opacity: 0.9;
+    }
+    /* ------ Enroll Upload Alternative ------------------------------------------------------------------------------------------------------------ */
+    .upload-enroll-divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 16px 0 10px;
+    }
+    .upload-enroll-divider::before,
+    .upload-enroll-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+    }
+    .upload-enroll-divider span {
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      color: var(--overlay1);
+      white-space: nowrap;
+    }
+
+    .upload-enroll-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    /* hidden file input - triggered by the styled label */
+    .upload-file-input-hidden {
+      display: none;
+    }
+
+    /* pill button that triggers the file picker */
+    .upload-enroll-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 16px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--accent-light);
+      background: rgba(14, 165, 233, 0.10);
+      border: 1px solid rgba(56, 189, 248, 0.30);
+      border-radius: 999px;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+      user-select: none;
+    }
+    .upload-enroll-label:hover {
+      background: rgba(14, 165, 233, 0.20);
+      border-color: rgba(56, 189, 248, 0.55);
+      color: var(--text);
+    }
+    .upload-enroll-label:disabled,
+    input:disabled + .upload-enroll-label {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .upload-icon-svg {
+      width: 15px;
+      height: 15px;
+      flex-shrink: 0;
+    }
+
+    .enroll-file-count {
+      font-size: 0.78rem;
+      color: var(--subtext);
+      font-style: italic;
+    }
+
+    /* per-file results list */
+    .enroll-file-results {
+      list-style: none;
+      padding: 0;
+      margin: 10px 0 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .enroll-file-results.hidden {
+      display: none;
+    }
+
+    .enroll-file-result {
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 500;
+    }
+
+    .enroll-file-accepted {
+      color: var(--emerald);
+      background: rgba(52, 211, 153, 0.08);
+      border: 1px solid rgba(52, 211, 153, 0.22);
+    }
+
+    .enroll-file-rejected {
+      color: var(--danger);
+      background: rgba(239, 68, 68, 0.07);
+      border: 1px solid rgba(239, 68, 68, 0.20);
+    }
+
+    /* ------ Toast Notifications ------------------------------------------------------------------------------------------------------------------------------ */
+    .toast-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+      max-width: 320px;
+      width: 100%;
+    }
+
+    .toast-item {
+      pointer-events: auto;
+      background: rgba(15, 23, 42, 0.92);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text);
+      font-size: 0.84rem;
+      font-weight: 500;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .toast-item.toast-out {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+
+    .toast-item.toast-success {
+      border-left: 4px solid var(--emerald);
+    }
+
+    .toast-item.toast-error {
+      border-left: 4px solid var(--danger);
+    }
+
+    .toast-item.toast-warning {
+      border-left: 4px solid var(--amber);
+    }
+
+    .toast-item.toast-info {
+      border-left: 4px solid var(--accent);
+    }
+
+    @keyframes toastIn {
+      from {
+        opacity: 0;
+        transform: translateY(-12px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* ------ Animated Microphone Icon --------------------------------------------------------------------------------------------------------------- */
+    .scan-ring-icon {
+      transition: transform 0.3s ease, color 0.3s ease;
+    }
+
+    .scan-ring-icon.mic-state-idle {
+      animation: micBreathe 2.5s ease-in-out infinite alternate;
+      color: var(--accent-light);
+    }
+
+    .scan-ring-icon.mic-state-recording {
+      animation: micPulse 0.8s ease-in-out infinite alternate;
+      color: var(--accent-light);
+      filter: drop-shadow(0 0 10px var(--accent-light));
+    }
+
+    .scan-ring-icon.mic-state-processing {
+      animation: micSpin 1.2s linear infinite;
+      color: var(--amber);
+    }
+
+    @keyframes micBreathe {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      100% { transform: scale(1.08); opacity: 1; }
+    }
+
+    @keyframes micPulse {
+      0% { transform: scale(0.92); }
+      100% { transform: scale(1.18); }
+    }
+
+    @keyframes micSpin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* ------ Mic Quality Pre-check Notice ------------------------------------------------------------------------------------------------ */
+    .mic-warning-notice {
+      background: rgba(255, 191, 0, 0.12);
+      border: 1px solid rgba(255, 191, 0, 0.35);
+      color: var(--amber);
+      font-size: 0.78rem;
+      padding: 8px 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mic-warning-notice.hidden {
+      display: none;
+    }
+
+    /* ------ Speaker Search Input in Cards Grid ------------------------------------------------------------------------------ */
+    .speaker-search-wrap {
+      padding: 10px 14px 4px;
+    }
+
+    .speaker-search-input {
+      width: 100%;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      outline: none;
+    }
+
+    .speaker-search-input:focus {
+      border-color: var(--accent-light);
+    }
+
+    /*  Light-Dark Theme Variant  */
+    [data-theme="light-dark"] {
+      --bg-base:    #1a1f2e;
+      --surface:    rgba(38, 44, 62, 0.82);
+      --border:     rgba(255, 255, 255, 0.18);
+      --text:       #dde3f0;
+      --overlay1:   #8b95b0;
+      --blob-opacity: 0.18;
+    }
+    [data-theme="light-dark"] body {
+      background: linear-gradient(135deg, #1a1f2e 0%, #22293c 50%, #1e2438 100%);
+    }
+    [data-theme="light-dark"] .card,
+    [data-theme="light-dark"] .glass-modal-card,
+    [data-theme="light-dark"] .speaker-panel {
+      background: var(--surface);
+      border-color: var(--border);
+      backdrop-filter: blur(12px);
+    }
+    [data-theme="light-dark"] .blob { opacity: var(--blob-opacity, 0.18); }
+
+    /*  Toast Notifications  */
+    .toast-container {
+      position: fixed;
+      top: 18px;
+      right: 18px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .toast-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: #fff;
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      opacity: 1;
+      transform: translateX(0);
+      transition: opacity 0.4s ease, transform 0.4s ease;
+      pointer-events: auto;
+      max-width: 320px;
+    }
+    .toast-item.toast-out {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    .toast-success { background: rgba(16, 185, 129, 0.85); }
+    .toast-error   { background: rgba(220, 38, 38, 0.85); }
+    .toast-warning { background: rgba(245, 158, 11, 0.85); }
+    .toast-info    { background: rgba(59, 130, 246, 0.75); }
+
+    /*  Animated Mic Icon States  */
+    .scan-ring-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .mic-icon-svg {
+      color: var(--accent-light);
+      transition: color 0.3s ease;
+    }
+    .mic-state-idle .mic-icon-svg {
+      animation: mic-breathe 3s ease-in-out infinite;
+      color: var(--overlay1);
+    }
+    .mic-state-recording .mic-icon-svg {
+      animation: mic-pulse 0.7s ease-in-out infinite;
+      color: var(--amethyst);
+      filter: drop-shadow(0 0 6px var(--amethyst));
+    }
+    .mic-state-processing .mic-icon-svg {
+      animation: mic-spin 1.2s linear infinite;
+      color: var(--amber);
+      filter: drop-shadow(0 0 5px var(--amber));
+    }
+    @keyframes mic-breathe {
+      0%, 100% { transform: scale(1);    opacity: 0.6; }
+      50%       { transform: scale(1.12); opacity: 1;   }
+    }
+    @keyframes mic-pulse {
+      0%, 100% { transform: scale(1);    }
+      50%       { transform: scale(1.22); }
+    }
+    @keyframes mic-spin {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    /*  Circular Confidence Gauge  */
+    .conf-gauge-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 10px 0 14px;
+    }
+    .conf-gauge-svg {
+      width: 110px;
+      height: 110px;
+      overflow: visible;
+    }
+    .conf-gauge-track {
+      stroke: rgba(255,255,255,0.08);
+    }
+    .conf-gauge-fill {
+      stroke: var(--accent);
+      stroke-linecap: round;
+      transition: stroke-dashoffset 0.7s cubic-bezier(0.4,0,0.2,1), stroke 0.4s ease;
+    }
+    .conf-gauge-pct {
+      font-size: 14px;
+      font-weight: 700;
+      fill: var(--text);
+      font-family: var(--font-ui);
+      dominant-baseline: middle;
+      transition: fill 0.4s ease;
+    }
+
+    /*  Speaker Card Grid  */
+    .speaker-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 10px;
+      padding: 10px 14px;
+      list-style: none;
+      margin: 0;
+      max-height: 340px;
+      overflow-y: auto;
+    }
+    .speaker-item-wrapper {
+      animation: fadeIn 0.2s ease;
+    }
+    .speaker-item {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 10px;
+      padding: 10px 8px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .speaker-item:hover {
+      background: rgba(255,255,255,0.09);
+      border-color: rgba(255,255,255,0.22);
+    }
+    .speaker-display-row {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      text-align: center;
+    }
+    .speaker-item-name {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--text);
+      word-break: break-word;
+    }
+    .speaker-item-actions {
+      display: flex;
+      gap: 4px;
+      justify-content: center;
+    }
+    .speaker-item-rename,
+    .speaker-item-remove {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 3px 7px;
+      transition: background 0.15s;
+    }
+    .speaker-item-rename:hover { background: rgba(99,102,241,0.3); }
+    .speaker-item-remove:hover { background: rgba(220,38,38,0.35); color: #fca5a5; }
+    .speaker-edit-row {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+    }
+    .speaker-edit-row.hidden { display: none; }
+    .speaker-edit-input {
+      flex: 1;
+      min-width: 0;
+      background: rgba(0,0,0,0.3);
+      border: 1px solid rgba(255,255,255,0.18);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.75rem;
+      padding: 3px 6px;
+      outline: none;
+    }
+    .speaker-edit-save, .speaker-edit-cancel {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      color: var(--text);
+      cursor: pointer;
+      font-size: 0.75rem;
+      padding: 3px 6px;
+    }
+    .speaker-edit-error {
+      font-size: 0.7rem;
+      color: var(--ruby);
+      padding: 2px 0;
+    }
+    .speaker-edit-error.hidden { display: none; }
+    .speaker-item-empty {
+      color: var(--overlay1);
+      font-size: 0.82rem;
+      text-align: center;
+      padding: 20px 0;
+    }
+    @keyframes removing-card {
+      to { opacity: 0; transform: scale(0.85); }
+    }
+    .speaker-item-wrapper.removing {
+      animation: removing-card 0.25s ease forwards;
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- Toast Notification Container (Top-Right) -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- Ambient Light Blobs -->
+  <div class="bg-blobs">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <main class="app" role="main">
+
+    <!-- Header -->
+    <header class="header">
+      <h1> SPEAKER RECOGNITION SYSTEM</h1>
+      <p class="subtitle">- AI-Powered -</p>
+    </header>
+
+    <!-- Status bar -->
+    <div class="status-bar" id="statusBar" aria-live="polite">
+      <span class="badge" id="statusBadge">-</span>
+      <span class="status-msg" id="statusMsg">System Ready</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- 1 - Enroll card -->
+    <section class="card" aria-labelledby="enroll-title">
+      <div class="card-waveform-chrome">
+        <svg width="100%" height="18" viewBox="0 0 400 18" preserveAspectRatio="none">
+          <path class="waveform-path-bg" d="M0,9 Q25,3 50,9 T100,9 T150,9 T200,9 T250,9 T300,9 T350,9 T400,9"
+            fill="none" stroke-width="1.5" />
+        </svg>
+      </div>
+      <div class="card-title">
+        <span class="num">1</span> Enroll New Speaker
+      </div>
+      <div class="row" style="margin-bottom:14px;">
+        <label class="field-label" for="nameInput">Name:</label>
+        <input type="text" id="nameInput" placeholder="e.g. Alice" autocomplete="off" />
+      </div>
+
+      <div class="verify-actions">
+        <button class="btn btn-verify" id="enrollBtn" onclick="startEnroll()">Enroll</button>
+        <span class="verify-or">or</span>
+        <button class="btn btn-upload" id="enrollFileLabel" onclick="document.getElementById('enrollFileInput').click()">Upload Files</button>
+        <input type="file" id="enrollFileInput" accept="audio/*" multiple class="upload-file-input-hidden" aria-label="Upload audio files for enrollment" />
+      </div>
+
+      <!-- Segment progress (hidden until enrollment starts) -->
+      <div class="progress-wrap hidden" id="enrollProgress">
+        <div class="progress-label" id="segLabel">Segment 1 of {{ enroll_segments }} - speak now</div>
+        <div class="recording-pulse-visualizer hidden" id="enrollPulseVisualizer">
+          <span class="pulse-bar"></span>
+          <span class="pulse-bar"></span>
+          <span class="pulse-bar"></span>
+          <span class="pulse-bar"></span>
+          <span class="pulse-bar"></span>
+          <span class="pulse-text">REC</span>
+        </div>
+        <div class="progress-track" style="margin-top:8px;">
+          <div class="progress-bar enroll-bar" id="enrollBar"></div>
+        </div>
+        <button class="btn btn-cancel-retry hidden" id="enrollCancelBtn" onclick="cancelEnroll()"> Cancel &amp;
+          Retry</button>
+      </div>
+
+      <div class="upload-status" id="enrollFileCount"></div>
+      <div id="enrollUploadStatus" class="upload-status" role="status" aria-live="polite"></div>
+      <!-- Per-file results (shown after job completes) -->
+      <ul class="enroll-file-results hidden" id="enrollFileResults" aria-label="Per-file enrollment results"></ul>
+    </section>
+
+
+    <div class="divider"></div>
+
+    <!-- 2 - Identify card -->
+    <section class="card" aria-labelledby="verify-title" id="identifyCard">
+      <div class="card-waveform-chrome">
+        <svg width="100%" height="18" viewBox="0 0 400 18" preserveAspectRatio="none">
+          <path class="waveform-path-bg" d="M0,9 Q25,3 50,9 T100,9 T150,9 T200,9 T250,9 T300,9 T350,9 T400,9"
+            fill="none" stroke-width="1.5" />
+        </svg>
+      </div>
+      <div class="card-title">
+        <span class="num">2</span> Identify Speaker
+      </div>
+
+      <!-- Radial Voice-Scan Ring with Animated Mic Icon -->
+      <div class="scan-ring-container">
+        <svg class="scan-ring-svg" viewBox="0 0 100 100">
+          <circle class="ring-track" cx="50" cy="50" r="42" fill="none" stroke-width="2.5" />
+          <circle class="ring-progress" id="verifyScanArc" cx="50" cy="50" r="42" fill="none" stroke-width="3"
+            stroke-linecap="round" stroke-dasharray="263.89" stroke-dashoffset="263.89" transform="rotate(-90 50 50)" />
+        </svg>
+        <div class="scan-ring-icon mic-state-idle" id="verifyRingIcon">
+          <svg class="mic-icon-svg" viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="22"></line>
+          </svg>
+        </div>
+      </div>
+
+      {% if is_testing_mode %}
+      <!-- Testing Mode Ground-Truth Selector (Only visible with ?test=1) -->
+      <div class="testing-mode-panel" id="testingModePanel" style="margin-bottom: 16px; padding: 12px 16px; background: rgba(250, 204, 21, 0.08); border: 1px dashed rgba(250, 204, 21, 0.4); border-radius: 14px; text-align: left;">
+        <div style="font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #FACC15; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+          Testing Mode (Ground-Truth Labeled Attempt)
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <label for="expectedSpeakerSelect" style="font-size: 0.82rem; color: var(--subtext); white-space: nowrap;">Expected speaker:</label>
+          <select id="expectedSpeakerSelect" style="flex: 1; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 999px; color: var(--text); padding: 6px 12px; font-size: 0.85rem; outline: none; cursor: pointer;">
+            <option value="">-- None (Unlabeled) --</option>
+          </select>
+        </div>
+      </div>
+      {% endif %}
+
+      <p class="body-text" style="text-align:center;">Record a {{ segment_duration }}s clip or upload an audio file to match against enrolled profiles.</p>
+
+      <div class="verify-actions">
+        <button class="btn btn-verify" id="verifyBtn" onclick="startVerify()">Identify Voice</button>
+        <span class="verify-or">or</span>
+        <button class="btn btn-upload" id="uploadBtn" onclick="document.getElementById('uploadFileInput').click()">Upload Audio</button>
+        <input type="file" id="uploadFileInput" accept=".wav,.mp3,.m4a,.flac,.ogg,audio/*" />
+      </div>
+      <div class="upload-status" id="uploadStatus"></div>
+
+      <!-- Uploading indicator – shown only while file is being sent to server -->
+      <div id="uploadingIndicator">
+        <svg class="uploading-arrow-svg" width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M9 2L9 13" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M4 6L9 2L14 6" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M3 16H15" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+        </svg>
+        <span class="uploading-label">UPLOADING</span>
+        <span class="uploading-dots"><span></span><span></span><span></span></span>
+      </div>
+
+      <!-- Client-Side Waveform Preview Canvas (A1) -->
+      <div class="waveform-preview-container hidden" id="waveformPreviewContainer">
+        <div class="waveform-preview-header">
+          <span class="waveform-preview-title">Audio Preview</span>
+          <span class="waveform-duration" id="waveformDuration">0.0s</span>
+        </div>
+        <canvas class="waveform-canvas" id="waveformCanvas" width="450" height="44"></canvas>
+      </div>
+
+      <!-- Recording countdown bar (hidden until verify starts) -->
+      <div class="progress-wrap hidden" id="recProgress">
+        <div class="recording-pulse-visualizer hidden" id="recPulseVisualizer">
+          <span class="pulse-bar"></span>
+          <span class="pulse-bar"></span>
+          <span class="pulse-bar"></span>
+          <span class="pulse-bar"></span>
+          <span class="pulse-bar"></span>
+          <span class="pulse-text">RECORDING</span>
+        </div>
+        <div class="progress-track" style="margin-top:8px; height:6px;">
+          <div class="progress-bar rec-bar" id="recBar"></div>
+        </div>
+        <button class="btn btn-cancel-retry hidden" id="verifyCancelBtn" onclick="cancelVerify()"> Cancel &amp;
+          Retry</button>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- 3 - Result card -->
+    <section class="card" aria-labelledby="result-title">
+      <div class="card-waveform-chrome">
+        <svg width="100%" height="18" viewBox="0 0 400 18" preserveAspectRatio="none">
+          <path class="waveform-path-bg" d="M0,9 Q25,3 50,9 T100,9 T150,9 T200,9 T250,9 T300,9 T350,9 T400,9"
+            fill="none" stroke-width="1.5" />
+        </svg>
+      </div>
+      <div class="card-title">
+        <span class="num">3</span> Result
+      </div>
+      <div class="result-row">
+        <span class="result-key">Speaker:</span>
+        <span class="result-val" id="resultName">-</span>
+      </div>
+      <div class="result-row" style="margin-bottom:10px;">
+        <span class="result-key">Confidence Level:</span>
+        <span class="result-score" id="resultScore">-</span>
+      </div>
+
+      <!-- Circular Confidence Gauge (Feature 3) -->
+      <div class="conf-gauge-wrap" id="confGaugeWrap">
+        <svg class="conf-gauge-svg" viewBox="0 0 100 100">
+          <circle class="conf-gauge-track" cx="50" cy="50" r="38" fill="none" stroke-width="7" />
+          <circle class="conf-gauge-fill" id="confGaugeArc" cx="50" cy="50" r="38" fill="none" stroke-width="7"
+                  stroke-dasharray="238.76" stroke-dashoffset="238.76" transform="rotate(-90 50 50)" />
+          <text x="50" y="52" text-anchor="middle" class="conf-gauge-pct" id="confGaugePct">0%</text>
+        </svg>
+      </div>
+
+      <!-- Diagnostic Margin Inspector Block (B3) -->
+      <div class="margin-inspector-block hidden" id="marginInspectorBlock">
+        <div class="margin-inspector-row">
+          <span class="margin-inspector-key">Runner-up:</span>
+          <span class="margin-inspector-val" id="runnerUpVal">-</span>
+        </div>
+        <div class="margin-inspector-row">
+          <span class="margin-inspector-key">Margin:</span>
+          <span class="margin-inspector-val" id="marginVal">-</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="divider"></div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div class="footer-left">
+        <a href="/logout" class="logout-btn" title="Sign out">Logout</a>
+        <a href="/dashboard/stats" class="logout-btn" title="View Statistics">Stats</a>
+        <div class="theme-picker" id="themePicker" aria-label="Select theme color">
+          <button type="button" class="theme-swatch swatch-blue" data-theme-val="blue" onclick="selectTheme('blue')" title="Blue Theme" aria-label="Blue Theme"></button>
+          <button type="button" class="theme-swatch swatch-red" data-theme-val="red" onclick="selectTheme('red')" title="Red Theme" aria-label="Red Theme"></button>
+          <button type="button" class="theme-swatch swatch-green" data-theme-val="green" onclick="selectTheme('green')" title="Green Theme" aria-label="Green Theme"></button>
+          <button type="button" class="theme-swatch swatch-yellow" data-theme-val="yellow" onclick="selectTheme('yellow')" title="Yellow Theme" aria-label="Yellow Theme"></button>
+
+        </div>
+        {% if user_email %}
+        <span class="logout-user">{{ user_email }}</span>
+        {% endif %}
+      </div>
+      <button class="btn btn-danger" id="resetBtn" onclick="openSpeakerPanel()">Reset Database</button>
+    </footer>
+
+
+    <!-- Speaker Management Panel -->
+    <div class="speaker-panel-overlay hidden" id="speakerPanelOverlay">
+      <div class="speaker-panel" id="speakerPanel">
+        <div class="speaker-panel-header">
+          <h3>Enrolled Speakers</h3>
+          <button class="speaker-panel-close" id="speakerPanelClose" title="Close">&times;</button>
+        </div>
+        <div class="speaker-search-wrap">
+          <input type="text" id="speakerSearchInput" class="speaker-search-input" placeholder="Search speakers..." oninput="filterSpeakerCards(this.value)" />
+        </div>
+        <ul class="speaker-list" id="speakerList">
+          <!-- populated dynamically as card grid -->
+        </ul>
+        <div class="speaker-panel-divider"></div>
+        <div class="speaker-panel-footer">
+          <button class="speaker-reset-all" id="resetEverythingBtn">Reset Everything</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Custom Glass Modal Overlay -->
+  <div class="glass-modal-overlay hidden" id="glassModalOverlay" role="dialog" aria-modal="true">
+    <div class="glass-modal-card">
+      <h3 class="glass-modal-title" id="glassModalTitle">System Notification</h3>
+      <p class="glass-modal-body" id="glassModalMsg"></p>
+      <div class="glass-modal-actions" id="glassModalActions">
+        <button class="btn btn-primary" id="glassModalOk">OK</button>
+        <button class="btn btn-ghost hidden" id="glassModalCancel">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ------ Custom Glass Modal ------------------------------------------------------------------------------------------------------------------------------------ */
+    function showCustomModal({ title, message, confirmMode = false }) {
+      return new Promise((resolve) => {
+        const overlay = document.getElementById('glassModalOverlay');
+        const titleEl = document.getElementById('glassModalTitle');
+        const msgEl   = document.getElementById('glassModalMsg');
+        const okBtn   = document.getElementById('glassModalOk');
+        const cancelBtn = document.getElementById('glassModalCancel');
+        const displayTitle = title || (confirmMode ? 'Confirmation Required' : 'System Notification');
+        titleEl.textContent = displayTitle;
+        msgEl.textContent   = message;
+        if (displayTitle === 'SPEAKER IDENTIFICATION') titleEl.classList.add('speaker-id');
+        else titleEl.classList.remove('speaker-id');
+        if (confirmMode) { cancelBtn.classList.remove('hidden'); okBtn.textContent = 'Confirm'; }
+        else             { cancelBtn.classList.add('hidden');    okBtn.textContent = 'OK'; }
+        overlay.classList.remove('hidden');
+        const cleanup = (result) => { overlay.classList.add('hidden'); okBtn.onclick = null; cancelBtn.onclick = null; resolve(result); };
+        okBtn.onclick     = () => cleanup(true);
+        cancelBtn.onclick = () => cleanup(false);
+      });
+    }
+    window.alert   = (msg) => showCustomModal({ message: msg, confirmMode: false });
+    window.confirm = (msg) => showCustomModal({ message: msg, confirmMode: true });
+
+    /* ------ Deployment Mode & Constants -------------------------------------------------------------------------------------------------------------------------------------- */
+    const REMOTE_DEPLOYMENT = {{ 'true' if remote_deployment else 'false' }};
+    const ENROLL_SEGMENTS   = {{ enroll_segments }};
+    const SEGMENT_DURATION  = {{ segment_duration }};
+    const TOTAL_ENROLL_TICKS = ENROLL_SEGMENTS * SEGMENT_DURATION * 10;
+
+     /* ------ State ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ */
+    const STATES = {
+      idle: { icon: '-', color: 'var(--overlay1)', msg: 'System Ready' },
+      recording: { icon: '-', color: 'var(--amethyst)', msg: 'Recording...' },
+      processing: { icon: '-', color: 'var(--amber)', msg: 'Processing...' },
+      success: { icon: '-', color: 'var(--emerald)', msg: 'Verified Successfully' },
+      denied: { icon: '-', color: 'var(--ruby)', msg: 'Access Denied' },
+      error: { icon: '-', color: 'var(--ruby)', msg: 'Error' },
+      silence: { icon: '-', color: 'var(--rose)', msg: 'No Voice Detected' },
+      multiple_voices: { icon: '-', color: 'var(--rose)', msg: 'Multiple Voices Detected' },
+    };
+
+    let _jobRunning = false;
+    let _pollInterval = null;
+    let _tickInterval = null;
+    let _currentEnrollJobId = null;
+    let _currentVerifyJobId = null;
+    let _allSpeakersCache = [];
+
+    /* ------ Toast Notifications (Feature 4) ------------------------------------------------------------------------------------------------ */
+    function showToast(message, type = 'info', duration = 3500) {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+      const toast = document.createElement('div');
+      toast.className = `toast-item toast-${type}`;
+      const iconMap = { success: 'OK', error: '-', warning: '', info: '' };
+      toast.innerHTML = `<span>${iconMap[type] || ''}</span><span>${escapeHtml(message)}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.classList.add('toast-out');
+        toast.addEventListener('transitionend', () => toast.remove());
+      }, duration);
+    }
+
+    /* ------ Theme Swatch Picker --------------------------------------------------------------------------------------------------------------------- */
+    async function selectTheme(newTheme) {
+      const validThemes = ['blue', 'red', 'green', 'yellow'];
+      if (!validThemes.includes(newTheme)) {
+        newTheme = 'blue';
+      }
+
+      document.documentElement.setAttribute('data-theme', newTheme);
+
+      document.querySelectorAll('.theme-swatch').forEach(swatch => {
+        const isMatch = swatch.getAttribute('data-theme-val') === newTheme;
+        swatch.classList.toggle('active', isMatch);
+      });
+
+      try {
+        await fetch('/api/theme', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ theme: newTheme })
+        });
+      } catch (e) {}
+    }
+
+    function initTheme() {
+      let storedTheme = '{{ current_theme }}' || 'blue';
+      selectTheme(storedTheme);
+    }
+
+    /* ------ Microphone Quality Pre-Check (Feature 1) --------------------------------------------------------------------- */
+    async function checkMicQuality() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        return true;
+      }
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (err) {
+        showToast('Microphone access denied or device not found.', 'error', 4500);
+        return false;
+      }
+
+      try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const source = audioCtx.createMediaStreamSource(stream);
+        const analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 512;
+        source.connect(analyser);
+
+        const dataArray = new Float32Array(analyser.fftSize);
+        let totalRms = 0;
+        let peak = 0;
+        let samples = 0;
+
+        const sampleInterval = setInterval(() => {
+          analyser.getFloatTimeDomainData(dataArray);
+          let sumSq = 0;
+          for (let i = 0; i < dataArray.length; i++) {
+            const val = dataArray[i];
+            const absVal = Math.abs(val);
+            if (absVal > peak) peak = absVal;
+            sumSq += val * val;
+          }
+          totalRms += Math.sqrt(sumSq / dataArray.length);
+          samples++;
+        }, 50);
+
+        await new Promise((r) => setTimeout(r, 800));
+        clearInterval(sampleInterval);
+
+        stream.getTracks().forEach((track) => track.stop());
+        if (audioCtx.state !== 'closed') audioCtx.close();
+
+        const avgRms = samples > 0 ? totalRms / samples : 0;
+
+        if (avgRms < 0.003) {
+          showToast("Mic seems very quiet - check it's not muted or too far away.", "warning", 4500);
+        } else if (peak > 0.98) {
+          showToast("Mic clipping detected - consider lowering gain or moving back.", "warning", 4500);
+        }
+        return true;
+      } catch (e) {
+        if (stream) stream.getTracks().forEach((track) => track.stop());
+        return true;
+      }
+    }
+
+    /* ------ UI helpers --------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+    function updateMicIconState(key) {
+      const iconEl = document.getElementById('verifyRingIcon');
+      if (!iconEl) return;
+      iconEl.classList.remove('mic-state-idle', 'mic-state-recording', 'mic-state-processing');
+      if (key === 'recording') iconEl.classList.add('mic-state-recording');
+      else if (key === 'processing') iconEl.classList.add('mic-state-processing');
+      else iconEl.classList.add('mic-state-idle');
+    }
+
+    function setState(key, overrideMsg) {
+      const s = STATES[key] || STATES.idle;
+      const badge = document.getElementById('statusBadge');
+      const msg = document.getElementById('statusMsg');
+      badge.textContent = s.icon;
+      badge.style.color = s.color;
+      msg.textContent = overrideMsg || s.msg;
+      msg.style.color = s.color;
+      badge.classList.toggle('pulsing', key === 'recording' || key === 'processing');
+      updateMicIconState(key);
+    }
+
+    function lockUI(locked) {
+      _jobRunning = locked;
+      ['enrollBtn', 'verifyBtn', 'resetBtn', 'uploadBtn'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = locked;
+      });
+      document.getElementById('nameInput').disabled = locked;
+      const enrollFileInput = document.getElementById('enrollFileInput');
+      if (enrollFileInput) enrollFileInput.disabled = locked;
+      const enrollFileLabel = document.getElementById('enrollFileLabel');
+      if (enrollFileLabel) {
+        enrollFileLabel.style.opacity = locked ? '0.45' : '';
+        enrollFileLabel.style.cursor = locked ? 'not-allowed' : '';
+        enrollFileLabel.style.pointerEvents = locked ? 'none' : '';
+      }
+    }
+
+    function setBar(id, pct) {
+      const el = document.getElementById(id);
+      if (el) el.style.width = Math.min(100, pct) + '%';
+    }
+
+    function setConfGauge(pct, color) {
+      const fillArc = document.getElementById('confGaugeArc');
+      const pctText = document.getElementById('confGaugePct');
+      if (!fillArc || !pctText) return;
+      const clampedPct = Math.min(100, Math.max(0, pct));
+      const offset = 238.76 * (1 - clampedPct / 100);
+      fillArc.style.strokeDashoffset = offset.toFixed(2);
+      fillArc.style.stroke = color || 'var(--accent)';
+      pctText.textContent = `${clampedPct.toFixed(1)}%`;
+      pctText.style.fill = color || 'var(--text)';
+    }
+
+    function showEl(id) { const el = document.getElementById(id); if (el) el.classList.remove('hidden'); }
+    function hideEl(id) { const el = document.getElementById(id); if (el) el.classList.add('hidden'); }
+
+    function stopPoll() { if (_pollInterval) { clearInterval(_pollInterval); _pollInterval = null; } }
+    function stopTick() { if (_tickInterval) { clearInterval(_tickInterval); _tickInterval = null; } }
+
+    /* ------ Existing Speaker Re-Enroll Confirmation -------------------------------------------------------- */
+    async function checkExistingSpeaker(name) {
+      try {
+        const res = await fetch('/api/speakers');
+        const data = await res.json();
+        if (data.speakers && Array.isArray(data.speakers)) {
+          const exists = data.speakers.some(s => s.trim().toLowerCase() === name.trim().toLowerCase());
+          if (exists) {
+            const confirmReroll = await showCustomModal({
+              title: 'Speaker Already Enrolled',
+              message: `Speaker '${name}' is already enrolled in your database.\n\nDo you want to re-enroll and overwrite the existing voiceprint profile?`,
+              confirmMode: true
+            });
+            return confirmReroll;
+          }
+        }
+      } catch (e) {
+        console.error('Error checking existing speakers:', e);
+      }
+      return true;
+    }
+
+    /* ------ Mobile Viewport Detection & Browser MediaRecorder Path -------------------- */
+    function isMobileViewport() {
+      return window.innerWidth <= 768 || ('ontouchstart' in window && !window.matchMedia('(pointer: fine)').matches);
+    }
+
+    let _activeMediaStream = null;
+    let _activeMediaRecorder = null;
+    let _mobileRecordCancelled = false;
+
+    async function startMobileEnroll() {
+      const name = document.getElementById('nameInput').value.trim();
+      if (!name) { alert('Please enter a speaker name before enrolling.'); return; }
+
+      const proceed = await checkExistingSpeaker(name);
+      if (!proceed) return;
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showToast('Browser microphone access (getUserMedia) is not supported.', 'error', 4500);
+        return;
+      }
+
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        _activeMediaStream = stream;
+      } catch (err) {
+        showToast('Microphone permission denied.', 'error', 4500);
+        return;
+      }
+
+      _mobileRecordCancelled = false;
+      lockUI(true);
+      setState('recording', 'Starting enrollment...');
+      setBar('enrollBar', 0);
+      showEl('enrollProgress');
+      showEl('enrollPulseVisualizer');
+      showEl('enrollCancelBtn');
+
+      let options = {};
+      if (typeof MediaRecorder !== 'undefined') {
+        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) options.mimeType = 'audio/webm;codecs=opus';
+        else if (MediaRecorder.isTypeSupported('audio/webm')) options.mimeType = 'audio/webm';
+        else if (MediaRecorder.isTypeSupported('audio/mp4')) options.mimeType = 'audio/mp4';
+        else if (MediaRecorder.isTypeSupported('audio/ogg')) options.mimeType = 'audio/ogg';
+        else if (MediaRecorder.isTypeSupported('audio/wav')) options.mimeType = 'audio/wav';
+      }
+
+      const recordedBlobs = [];
+
+      for (let seg = 0; seg < ENROLL_SEGMENTS; seg++) {
+        if (_mobileRecordCancelled) break;
+
+        document.getElementById('segLabel').textContent = `Segment ${seg + 1} of ${ENROLL_SEGMENTS} - speak now`;
+
+        let mediaRecorder;
+        try {
+          mediaRecorder = new MediaRecorder(stream, options);
+          _activeMediaRecorder = mediaRecorder;
+        } catch (e) {
+          showToast('MediaRecorder error.', 'error', 4500);
+          break;
+        }
+
+        const segChunks = [];
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data && e.data.size > 0) segChunks.push(e.data);
+        };
+
+        mediaRecorder.start(100);
+
+        let segTick = seg * SEGMENT_DURATION * 10;
+        const endTick = (seg + 1) * SEGMENT_DURATION * 10;
+        stopTick();
+        _tickInterval = setInterval(() => {
+          segTick = Math.min(segTick + 1, endTick);
+          setBar('enrollBar', (segTick / TOTAL_ENROLL_TICKS) * 100);
+        }, 100);
+
+        await new Promise((resolve) => setTimeout(resolve, SEGMENT_DURATION * 1000));
+        stopTick();
+
+        if (_mobileRecordCancelled) {
+          if (mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+          break;
+        }
+
+        const stopPromise = new Promise((resolve) => {
+          mediaRecorder.onstop = resolve;
+        });
+        if (mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+        await stopPromise;
+
+        if (segChunks.length > 0) {
+          const segBlob = new Blob(segChunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+          recordedBlobs.push(segBlob);
+        }
+      }
+
+      stream.getTracks().forEach(t => t.stop());
+      _activeMediaStream = null;
+      _activeMediaRecorder = null;
+
+      if (_mobileRecordCancelled || recordedBlobs.length < ENROLL_SEGMENTS) {
+        lockUI(false);
+        hideEl('enrollProgress'); hideEl('enrollPulseVisualizer'); hideEl('enrollCancelBtn');
+        setBar('enrollBar', 0);
+        if (!_mobileRecordCancelled) {
+          setState('error', 'Enrollment recording incomplete');
+          showToast('Recording incomplete. Please try again.', 'error', 4000);
+        }
+        return;
+      }
+
+      setState('processing', 'Uploading enrollment segments...');
+      document.getElementById('segLabel').textContent = 'Processing segments...';
+
+      let ext = 'webm';
+      const sampleType = recordedBlobs[0].type;
+      if (sampleType.includes('mp4') || sampleType.includes('aac')) ext = 'mp4';
+      else if (sampleType.includes('ogg')) ext = 'ogg';
+      else if (sampleType.includes('wav')) ext = 'wav';
+
+      const formData = new FormData();
+      formData.append('name', name);
+      recordedBlobs.forEach((b, idx) => {
+        formData.append('files', b, `mobile_enroll_seg${idx}.${ext}`);
+      });
+
+      try {
+        const resp = await fetch('/api/enroll/upload', { method: 'POST', body: formData });
+        const data = await resp.json();
+        if (data.error) {
+          setState('error', 'Upload rejected');
+          showToast(data.error, 'error', 4000);
+          lockUI(false);
+          hideEl('enrollProgress'); hideEl('enrollPulseVisualizer'); hideEl('enrollCancelBtn');
+          return;
+        }
+        _currentEnrollJobId = data.job_id;
+        pollEnrollUpload(data.job_id);
+      } catch (e) {
+        setState('error', 'Network error');
+        lockUI(false);
+        hideEl('enrollProgress'); hideEl('enrollPulseVisualizer'); hideEl('enrollCancelBtn');
+      }
+    }
+
+    async function startMobileVerify() {
+      hideEl('waveformPreviewContainer');
+      const us = document.getElementById('uploadStatus');
+      if (us) { us.textContent = ''; us.classList.remove('error'); }
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        showToast('Browser microphone access (getUserMedia) is not supported.', 'error', 4500);
+        return;
+      }
+
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        _activeMediaStream = stream;
+      } catch (err) {
+        showToast('Microphone permission denied.', 'error', 4500);
+        return;
+      }
+
+      _mobileRecordCancelled = false;
+      lockUI(true);
+      setState('recording', `Listening (${SEGMENT_DURATION}s)...`);
+      setBar('recBar', 0);
+      showEl('recProgress');
+      showEl('recPulseVisualizer');
+      showEl('verifyCancelBtn');
+
+      const scanArc = document.getElementById('verifyScanArc');
+      if (scanArc) scanArc.style.strokeDashoffset = '263.89';
+
+      let options = {};
+      if (typeof MediaRecorder !== 'undefined') {
+        if (MediaRecorder.isTypeSupported('audio/webm;codecs=opus')) options.mimeType = 'audio/webm;codecs=opus';
+        else if (MediaRecorder.isTypeSupported('audio/webm')) options.mimeType = 'audio/webm';
+        else if (MediaRecorder.isTypeSupported('audio/mp4')) options.mimeType = 'audio/mp4';
+        else if (MediaRecorder.isTypeSupported('audio/ogg')) options.mimeType = 'audio/ogg';
+        else if (MediaRecorder.isTypeSupported('audio/wav')) options.mimeType = 'audio/wav';
+      }
+
+      let mediaRecorder;
+      try {
+        mediaRecorder = new MediaRecorder(stream, options);
+        _activeMediaRecorder = mediaRecorder;
+      } catch (e) {
+        showToast('MediaRecorder not supported on this browser.', 'error', 4500);
+        stream.getTracks().forEach(t => t.stop());
+        lockUI(false);
+        hideEl('recProgress'); hideEl('recPulseVisualizer'); hideEl('verifyCancelBtn');
+        return;
+      }
+
+      const chunks = [];
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data && e.data.size > 0) chunks.push(e.data);
+      };
+
+      mediaRecorder.start(100);
+
+      let recTick = 0;
+      const totalTicks = SEGMENT_DURATION * 10;
+      _tickInterval = setInterval(() => {
+        recTick = Math.min(recTick + 1, totalTicks);
+        setBar('recBar', (recTick / totalTicks) * 100);
+        if (scanArc) {
+          scanArc.style.strokeDashoffset = (263.89 * (1 - recTick / totalTicks)).toFixed(2);
+        }
+      }, 100);
+
+      await new Promise((resolve) => setTimeout(resolve, SEGMENT_DURATION * 1000));
+      stopTick();
+
+      if (_mobileRecordCancelled) {
+        if (mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+        stream.getTracks().forEach(t => t.stop());
+        return;
+      }
+
+      const stopPromise = new Promise((resolve) => {
+        mediaRecorder.onstop = resolve;
+      });
+      if (mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+      await stopPromise;
+      stream.getTracks().forEach(t => t.stop());
+      _activeMediaStream = null;
+      _activeMediaRecorder = null;
+
+      if (chunks.length === 0) {
+        setState('error', 'No audio recorded');
+        lockUI(false);
+        hideEl('recProgress'); hideEl('recPulseVisualizer'); hideEl('verifyCancelBtn');
+        return;
+      }
+
+      const blob = new Blob(chunks, { type: mediaRecorder.mimeType || 'audio/webm' });
+      let ext = 'webm';
+      if (blob.type.includes('mp4') || blob.type.includes('aac')) ext = 'mp4';
+      else if (blob.type.includes('ogg')) ext = 'ogg';
+      else if (blob.type.includes('wav')) ext = 'wav';
+
+      setState('processing', 'Analysing voiceprint...');
+      const formData = new FormData();
+      formData.append('file', blob, `mobile_record.${ext}`);
+      const expectedSel = document.getElementById('expectedSpeakerSelect');
+      if (expectedSel && expectedSel.value.trim()) {
+        formData.append('expected_name', expectedSel.value.trim());
+      }
+
+      try {
+        const resp = await fetch('/api/verify/upload', { method: 'POST', body: formData });
+        const data = await resp.json();
+        if (data.error) {
+          setState('error', 'Upload error');
+          showToast(data.error, 'error', 4000);
+          lockUI(false);
+          hideEl('recProgress'); hideEl('recPulseVisualizer'); hideEl('verifyCancelBtn');
+          return;
+        }
+        _currentVerifyJobId = data.job_id;
+        pollVerify(data.job_id);
+      } catch (e) {
+        setState('error', 'Network error');
+        lockUI(false);
+        hideEl('recProgress'); hideEl('recPulseVisualizer'); hideEl('verifyCancelBtn');
+      }
+    }
+
+    /* ------ Enrollment --------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+    async function startEnroll() {
+      if (isMobileViewport()) {
+        return startMobileEnroll();
+      }
+
+      const name = document.getElementById('nameInput').value.trim();
+      if (!name) { alert('Please enter a speaker name before enrolling.'); return; }
+
+      const proceed = await checkExistingSpeaker(name);
+      if (!proceed) return;
+
+      const micOk = await checkMicQuality();
+      if (!micOk) return;
+
+      lockUI(true);
+      setState('recording', 'Starting enrollment...');
+      setBar('enrollBar', 0);
+      document.getElementById('segLabel').textContent = `Segment 1 of ${ENROLL_SEGMENTS} - speak now`;
+      showEl('enrollProgress');
+      showEl('enrollPulseVisualizer');
+      showEl('enrollCancelBtn');
+
+      let resp, data;
+      try {
+        resp = await fetch('/api/enroll', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        data = await resp.json();
+      } catch (e) {
+        setState('error', 'Network error');
+        lockUI(false); hideEl('enrollProgress'); hideEl('enrollPulseVisualizer'); hideEl('enrollCancelBtn'); return;
+      }
+      if (data.error) { alert(data.error); lockUI(false); hideEl('enrollProgress'); hideEl('enrollPulseVisualizer'); hideEl('enrollCancelBtn'); return; }
+
+      _currentEnrollJobId = data.job_id;
+      pollEnroll(data.job_id);
+    }
+
+    async function cancelEnroll() {
+      _mobileRecordCancelled = true;
+      if (_activeMediaRecorder && _activeMediaRecorder.state !== 'inactive') {
+        try { _activeMediaRecorder.stop(); } catch(e){}
+      }
+      if (_activeMediaStream) {
+        _activeMediaStream.getTracks().forEach(t => t.stop());
+        _activeMediaStream = null;
+      }
+      if (!_currentEnrollJobId) {
+        stopTick(); stopPoll();
+        setState('idle', 'Enrollment cancelled');
+        lockUI(false); hideEl('enrollProgress'); hideEl('enrollPulseVisualizer'); hideEl('enrollCancelBtn');
+        setBar('enrollBar', 0);
+        return;
+      }
+      try {
+        await fetch(`/api/enroll/cancel/${_currentEnrollJobId}`, { method: 'POST' });
+      } catch (e) {
+        console.error('Error cancelling enrollment:', e);
+      }
+      stopTick();
+      setState('recording', 'Segment cancelled. Restarting segment...');
+      showToast('Enrollment segment cancelled.', 'info', 3000);
+    }
+
+    function pollEnroll(jobId) {
+      let lastStep = -1;
+      let tickCount = 0;
+
+      _pollInterval = setInterval(async () => {
+        let job;
+        try {
+          const r = await fetch(`/api/enroll/status/${jobId}`);
+          job = await r.json();
+        } catch { return; }
+
+        const { state, step, total, message, error_type } = job;
+
+        if (step !== lastStep) {
+          lastStep = step;
+          if (step < total) {
+            document.getElementById('segLabel').textContent =
+              `Segment ${step + 1} of ${total} - speak now`;
+            tickCount = step * SEGMENT_DURATION * 10;
+            stopTick();
+            _tickInterval = setInterval(() => {
+              tickCount = Math.min(tickCount + 1, (step + 1) * SEGMENT_DURATION * 10);
+              setBar('enrollBar', (tickCount / TOTAL_ENROLL_TICKS) * 100);
+            }, 100);
+          }
+        }
+
+        if (state === 'done') {
+          stopPoll(); stopTick();
+          setBar('enrollBar', 100);
+          setState('success', message);
+          document.getElementById('nameInput').value = '';
+          lockUI(false); hideEl('enrollProgress'); hideEl('enrollPulseVisualizer'); hideEl('enrollCancelBtn');
+          _currentEnrollJobId = null;
+          showToast(`Profile created: ${message}`, 'success', 4000);
+          alert(`Voiceprint profile created!\n${message}`);
+        } else if (state === 'cancelled') {
+          stopPoll(); stopTick();
+          lockUI(false); hideEl('enrollProgress'); hideEl('enrollPulseVisualizer'); hideEl('enrollCancelBtn');
+          setBar('enrollBar', 0);
+          _currentEnrollJobId = null;
+          setState('idle', 'Enrollment cancelled');
+        } else if (state === 'error') {
+          stopPoll(); stopTick();
+          if (error_type === 'silence') {
+            setState('silence');
+            alert(`No Voice Detected\n\n${message}`);
+          } else if (error_type === 'multiple_voices') {
+            setState('multiple_voices');
+            alert(`Multiple Voices Detected\n\n${message}`);
+          } else {
+            setState('error', 'Enrollment failed');
+            alert(`Enrollment Error\n\n${message}`);
+          }
+          lockUI(false); hideEl('enrollProgress'); hideEl('enrollPulseVisualizer'); hideEl('enrollCancelBtn');
+          setBar('enrollBar', 0);
+          _currentEnrollJobId = null;
+        }
+      }, 300);
+    }
+
+    /* ------ Enrollment - Upload path --------------------------------------------------------------------------------------------------------------------- */
+    document.getElementById('enrollFileInput').addEventListener('change', function(e) {
+      const files = Array.from(e.target.files);
+      const countEl = document.getElementById('enrollFileCount');
+      if (files.length === 0) {
+        countEl.textContent = '';
+        return;
+      }
+      countEl.textContent = files.length === 1
+        ? `1 file selected`
+        : `${files.length} files selected`;
+
+      startEnrollUpload();
+    });
+
+    async function startEnrollUpload() {
+      const fileInput = document.getElementById('enrollFileInput');
+      const nameInput = document.getElementById('nameInput');
+      const statusEl  = document.getElementById('enrollUploadStatus');
+      const resultsEl = document.getElementById('enrollFileResults');
+      const files = Array.from(fileInput.files);
+
+      if (!files.length) return;
+
+      const name = nameInput.value.trim();
+      if (!name) {
+        statusEl.textContent = 'Please enter a speaker name above before uploading.';
+        statusEl.classList.add('error');
+        showToast('Please enter a speaker name first.', 'error', 3500);
+        fileInput.value = '';
+        document.getElementById('enrollFileCount').textContent = '';
+        return;
+      }
+
+      const proceed = await checkExistingSpeaker(name);
+      if (!proceed) {
+        fileInput.value = '';
+        document.getElementById('enrollFileCount').textContent = '';
+        return;
+      }
+
+      statusEl.textContent = '';
+      statusEl.classList.remove('error');
+      resultsEl.innerHTML = '';
+      resultsEl.classList.add('hidden');
+
+      const allowed = ['.wav', '.mp3', '.m4a', '.flac', '.ogg', '.webm', '.mp4'];
+      const validFiles = [];
+      for (const f of files) {
+        const ext = '.' + f.name.split('.').pop().toLowerCase();
+        if (!allowed.includes(ext)) {
+          statusEl.textContent = `"${f.name}" has unsupported type (${ext}) and was skipped.`;
+          statusEl.classList.add('error');
+          showToast(`Unsupported file: ${f.name}`, 'warning', 3500);
+          continue;
+        }
+        if (f.size > 15 * 1024 * 1024) {
+          statusEl.textContent += ` "${f.name}" exceeds 15 MB and was skipped.`;
+          statusEl.classList.add('error');
+          showToast(`File exceeds 15MB limit: ${f.name}`, 'warning', 3500);
+          continue;
+        }
+        validFiles.push(f);
+      }
+
+      if (!validFiles.length) {
+        statusEl.textContent = 'No valid audio files to upload.';
+        statusEl.classList.add('error');
+        fileInput.value = '';
+        document.getElementById('enrollFileCount').textContent = '';
+        return;
+      }
+
+      lockUI(true);
+      setState('processing', `Uploading ${validFiles.length} file(s) for enrollment...`);
+      showEl('enrollProgress');
+      document.getElementById('segLabel').textContent = `Uploading ${validFiles.length} file(s)...`;
+      statusEl.textContent = `Uploading ${validFiles.length} file(s)...`;
+
+      const formData = new FormData();
+      formData.append('name', name);
+      for (const f of validFiles) {
+        formData.append('files', f);
+      }
+
+      let resp, data;
+      try {
+        resp = await fetch('/api/enroll/upload', { method: 'POST', body: formData });
+        data = await resp.json();
+      } catch (e) {
+        setState('error', 'Upload failed');
+        statusEl.textContent = 'Network error - could not upload files.';
+        statusEl.classList.add('error');
+        showToast('Upload network error.', 'error', 3500);
+        lockUI(false);
+        hideEl('enrollProgress');
+        fileInput.value = '';
+        document.getElementById('enrollFileCount').textContent = '';
+        return;
+      }
+
+      if (data.error) {
+        setState('error', 'Upload rejected');
+        statusEl.textContent = data.error;
+        statusEl.classList.add('error');
+        showToast(data.error, 'error', 4000);
+        if (data.file_results) _renderEnrollFileResults(data.file_results);
+        lockUI(false);
+        hideEl('enrollProgress');
+        fileInput.value = '';
+        document.getElementById('enrollFileCount').textContent = '';
+        return;
+      }
+
+      statusEl.textContent = 'Processing...';
+      _currentEnrollJobId = data.job_id;
+      pollEnrollUpload(data.job_id);
+      fileInput.value = '';
+      document.getElementById('enrollFileCount').textContent = '';
+    }
+
+    function pollEnrollUpload(jobId) {
+      _pollInterval = setInterval(async () => {
+        let job;
+        try {
+          const r = await fetch(`/api/enroll/status/${jobId}`);
+          job = await r.json();
+        } catch { return; }
+
+        const { state, step, total, message, file_results, error_type } = job;
+
+        if (state === 'running' && total > 0) {
+          const label = document.getElementById('segLabel');
+          if (label) label.textContent = message || `Processing file ${step + 1} of ${total}...`;
+          setBar('enrollBar', ((step / total) * 100));
+        }
+
+        if (state === 'done') {
+          stopPoll();
+          setBar('enrollBar', 100);
+          document.getElementById('enrollUploadStatus').textContent = '';
+          document.getElementById('nameInput').value = '';
+          const fileInput = document.getElementById('enrollFileInput');
+          if (fileInput) fileInput.value = '';
+          document.getElementById('enrollFileCount').textContent = '';
+          setState('success', message);
+          lockUI(false);
+          hideEl('enrollProgress');
+          _currentEnrollJobId = null;
+          if (file_results) _renderEnrollFileResults(file_results);
+          showToast('Enrollment files processed successfully.', 'success', 3500);
+          alert(`Enrollment complete!\n${message}`);
+        } else if (state === 'cancelled') {
+          stopPoll();
+          lockUI(false);
+          hideEl('enrollProgress');
+          _currentEnrollJobId = null;
+          setState('idle', 'Enrollment cancelled');
+          document.getElementById('enrollUploadStatus').textContent = 'Cancelled.';
+          showToast('Batch enrollment cancelled.', 'info', 3000);
+        } else if (state === 'error') {
+          stopPoll();
+          setState('error', 'Enrollment failed');
+          document.getElementById('enrollUploadStatus').textContent = message;
+          document.getElementById('enrollUploadStatus').classList.add('error');
+          if (file_results) _renderEnrollFileResults(file_results);
+          lockUI(false);
+          hideEl('enrollProgress');
+          setBar('enrollBar', 0);
+          _currentEnrollJobId = null;
+          showToast(`Enrollment failed: ${message}`, 'error', 4000);
+          alert(`Enrollment Error\n\n${message}`);
+        }
+      }, 400);
+    }
+
+    function _renderEnrollFileResults(fileResults) {
+      const ul = document.getElementById('enrollFileResults');
+      if (!ul || !fileResults || !fileResults.length) return;
+      ul.innerHTML = '';
+      ul.classList.remove('hidden');
+      for (const r of fileResults) {
+        const li = document.createElement('li');
+        li.className = r.status === 'accepted'
+          ? 'enroll-file-result enroll-file-accepted'
+          : 'enroll-file-result enroll-file-rejected';
+        const icon = r.status === 'accepted' ? 'OK' : '-';
+        const reason = r.reason ? ` - ${r.reason}` : '';
+        li.textContent = `${icon} ${r.filename}${reason}`;
+        ul.appendChild(li);
+      }
+    }
+
+    /* ------ Verification --------------------------------------------------------------------------------------------------------------------------------------------------------- */
+    async function startVerify() {
+      if (isMobileViewport()) {
+        return startMobileVerify();
+      }
+
+      const micOk = await checkMicQuality();
+      if (!micOk) return;
+
+      hideEl('waveformPreviewContainer');
+      const us = document.getElementById('uploadStatus');
+      if (us) { us.textContent = ''; us.classList.remove('error'); }
+
+      lockUI(true);
+      setState('recording', `Listening (${SEGMENT_DURATION}s)...`);
+      setBar('recBar', 0);
+      showEl('recProgress');
+      showEl('recPulseVisualizer');
+      showEl('verifyCancelBtn');
+
+      const scanArc = document.getElementById('verifyScanArc');
+      if (scanArc) scanArc.style.strokeDashoffset = '263.89';
+
+      let recTick = 0;
+      const totalTicks = SEGMENT_DURATION * 10;
+      _tickInterval = setInterval(() => {
+        recTick = Math.min(recTick + 1, totalTicks);
+        setBar('recBar', (recTick / totalTicks) * 100);
+        if (scanArc) {
+          scanArc.style.strokeDashoffset = (263.89 * (1 - recTick / totalTicks)).toFixed(2);
+        }
+      }, 100);
+
+      let resp, data;
+      try {
+        const expectedSel = document.getElementById('expectedSpeakerSelect');
+        const expectedName = expectedSel ? (expectedSel.value || '').trim() : '';
+        const verifyPayload = expectedName ? { expected_name: expectedName } : {};
+
+        resp = await fetch('/api/verify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(verifyPayload)
+        });
+        data = await resp.json();
+      } catch (e) {
+        stopTick(); hideEl('recProgress'); hideEl('recPulseVisualizer'); hideEl('verifyCancelBtn');
+        setState('error', 'Network error'); lockUI(false); return;
+      }
+
+      _currentVerifyJobId = data.job_id;
+      pollVerify(data.job_id);
+    }
+
+    /* ------ Client-Side Waveform Preview (A1) ------------------------------------------------------------------------------------------------------ */
+    async function renderAudioPreview(file) {
+      const container = document.getElementById('waveformPreviewContainer');
+      const canvas = document.getElementById('waveformCanvas');
+      const durationEl = document.getElementById('waveformDuration');
+
+      if (!file) {
+        if (container) container.classList.add('hidden');
+        return;
+      }
+
+      try {
+        const arrayBuffer = await file.arrayBuffer();
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const audioBuffer = await audioCtx.decodeAudioData(arrayBuffer);
+
+        const duration = audioBuffer.duration;
+        const mins = Math.floor(duration / 60);
+        const secs = (duration % 60).toFixed(1);
+        const durationStr = mins > 0 ? `${mins}m ${secs}s` : `${secs}s`;
+        if (durationEl) durationEl.textContent = `${durationStr}`;
+
+        const channelData = audioBuffer.getChannelData(0);
+        const samples = channelData.length;
+        const numBars = 150;
+        const blockSize = Math.floor(samples / numBars) || 1;
+        const barData = [];
+
+        for (let i = 0; i < numBars; i++) {
+          const start = i * blockSize;
+          let sum = 0;
+          let count = 0;
+          for (let j = 0; j < blockSize && (start + j) < samples; j++) {
+            sum += Math.abs(channelData[start + j]);
+            count++;
+          }
+          barData.push(count > 0 ? sum / count : 0);
+        }
+
+        const maxAmp = Math.max(...barData) || 1;
+        const ctx = canvas.getContext('2d');
+        const width = canvas.width;
+        const height = canvas.height;
+        ctx.clearRect(0, 0, width, height);
+
+        const computedAccent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#0EA5E9';
+        const computedLight = getComputedStyle(document.documentElement).getPropertyValue('--accent-light').trim() || '#38BDF8';
+
+        const barWidth = width / numBars;
+        const gap = 1;
+        const actualBarWidth = Math.max(1, barWidth - gap);
+
+        for (let i = 0; i < numBars; i++) {
+          const normalized = barData[i] / maxAmp;
+          const barHeight = Math.max(3, normalized * (height - 6));
+          const x = i * barWidth;
+          const y = (height - barHeight) / 2;
+
+          const grad = ctx.createLinearGradient(0, y, 0, y + barHeight);
+          grad.addColorStop(0, computedLight);
+          grad.addColorStop(1, computedAccent);
+
+          ctx.fillStyle = grad;
+          if (ctx.roundRect) {
+            ctx.beginPath();
+            ctx.roundRect(x, y, actualBarWidth, barHeight, 1.5);
+            ctx.fill();
+          } else {
+            ctx.fillRect(x, y, actualBarWidth, barHeight);
+          }
+        }
+
+        if (container) container.classList.remove('hidden');
+
+        if (audioCtx.state !== 'closed') {
+          audioCtx.close();
+        }
+      } catch (err) {
+        console.warn('Audio decoding / waveform preview failed:', err);
+        if (container) container.classList.add('hidden');
+      }
+    }
+
+    /* ------ Upload Verification --------------------------------------------------------------------------------------------------------------------------------- */
+    document.getElementById('uploadFileInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        renderAudioPreview(file);
+      }
+      startUploadVerify();
+    });
+
+    async function startUploadVerify() {
+      const fileInput = document.getElementById('uploadFileInput');
+      const statusEl  = document.getElementById('uploadStatus');
+      const file = fileInput.files[0];
+      if (!file) return;
+
+      statusEl.textContent = '';
+      statusEl.classList.remove('error');
+
+      const ext = '.' + file.name.split('.').pop().toLowerCase();
+      const allowed = ['.wav', '.mp3', '.m4a', '.flac', '.ogg', '.webm', '.mp4'];
+      if (!allowed.includes(ext)) {
+        statusEl.textContent = 'Unsupported file type (' + ext + '). Use: ' + allowed.join(', ');
+        statusEl.classList.add('error');
+        showToast(`Unsupported file type: ${ext}`, 'error', 3500);
+        fileInput.value = '';
+        return;
+      }
+
+      if (file.size > 15 * 1024 * 1024) {
+        statusEl.textContent = 'File too large (max 15 MB).';
+        statusEl.classList.add('error');
+        showToast('File exceeds 15 MB size limit.', 'error', 3500);
+        fileInput.value = '';
+        return;
+      }
+
+      // Show uploading indicator BEFORE lockUI so it is visible
+      const _ind = document.getElementById('uploadingIndicator');
+      if (_ind) _ind.classList.add('visible');
+      lockUI(true);
+      setState('processing', 'Uploading audio...');
+      statusEl.textContent = 'Uploading "' + file.name + '"...';
+
+      const formData = new FormData();
+      formData.append('file', file);
+      const expectedSelUpload = document.getElementById('expectedSpeakerSelect');
+      if (expectedSelUpload && expectedSelUpload.value.trim()) {
+        formData.append('expected_name', expectedSelUpload.value.trim());
+      }
+
+      let resp, data;
+      try {
+        resp = await fetch('/api/verify/upload', { method: 'POST', body: formData });
+        data = await resp.json();
+      } catch (e) {
+        const _ind1 = document.getElementById('uploadingIndicator');
+        if (_ind1) _ind1.classList.remove('visible');
+        setState('error', 'Upload failed');
+        statusEl.textContent = 'Network error -- could not upload file.';
+        statusEl.classList.add('error');
+        showToast('Verification upload network error.', 'error', 3500);
+        lockUI(false);
+        fileInput.value = '';
+        return;
+      }
+
+      if (data.error) {
+        const _ind2 = document.getElementById('uploadingIndicator');
+        if (_ind2) _ind2.classList.remove('visible');
+        setState('error', 'Upload rejected');
+        statusEl.textContent = data.error;
+        statusEl.classList.add('error');
+        showToast(data.error, 'error', 3500);
+        lockUI(false);
+        fileInput.value = '';
+        return;
+      }
+
+      // Upload finished — hide indicator, show processing state
+      const _ind3 = document.getElementById('uploadingIndicator');
+      if (_ind3) _ind3.classList.remove('visible');
+      statusEl.textContent = 'Processing...';
+      _currentVerifyJobId = data.job_id;
+
+      pollVerify(data.job_id);
+      fileInput.value = '';
+    }
+
+    async function cancelVerify() {
+      _mobileRecordCancelled = true;
+      if (_activeMediaRecorder && _activeMediaRecorder.state !== 'inactive') {
+        try { _activeMediaRecorder.stop(); } catch(e){}
+      }
+      if (_activeMediaStream) {
+        _activeMediaStream.getTracks().forEach(t => t.stop());
+        _activeMediaStream = null;
+      }
+      if (_currentVerifyJobId) {
+        try {
+          await fetch(`/api/verify/cancel/${_currentVerifyJobId}`, { method: 'POST' });
+        } catch (e) {
+          console.error('Error cancelling verification:', e);
+        }
+      }
+      stopPoll(); stopTick();
+      hideEl('recProgress');
+      hideEl('recPulseVisualizer');
+      hideEl('verifyCancelBtn');
+      hideEl('waveformPreviewContainer');
+      lockUI(false);
+      _currentVerifyJobId = null;
+      setState('idle', 'System Ready');
+      showToast('Verification cancelled.', 'info', 3000);
+    }
+
+    function pollVerify(jobId) {
+      _pollInterval = setInterval(async () => {
+        let job;
+        try {
+          const r = await fetch(`/api/verify/status/${jobId}`);
+          job = await r.json();
+        } catch { return; }
+
+        const { state, speaker, score, detail, top_match, runner_up, margin, message, error_type } = job;
+
+        if (state === 'running' && message && message.includes('Analys')) {
+          setState('processing', 'Analysing voiceprint...');
+          const us = document.getElementById('uploadStatus');
+          if (us) us.textContent = 'Analysing voiceprint...';
+        }
+
+        const _clearUploadStatus = () => {
+          const us = document.getElementById('uploadStatus');
+          if (us) { us.textContent = ''; us.classList.remove('error'); }
+        };
+
+        if (state === 'done') {
+          stopPoll(); stopTick();
+          hideEl('recProgress'); hideEl('recPulseVisualizer'); hideEl('verifyCancelBtn');
+          _clearUploadStatus();
+          showResult(speaker, score, detail, top_match, runner_up, margin, job.tts_url);
+          lockUI(false);
+          _currentVerifyJobId = null;
+        } else if (state === 'cancelled') {
+          stopPoll(); stopTick();
+          hideEl('recProgress'); hideEl('recPulseVisualizer'); hideEl('verifyCancelBtn');
+          _clearUploadStatus();
+          lockUI(false);
+          _currentVerifyJobId = null;
+          setState('idle', 'Verification cancelled');
+        } else if (state === 'error') {
+          stopPoll(); stopTick();
+          hideEl('recProgress'); hideEl('recPulseVisualizer'); hideEl('verifyCancelBtn');
+          _clearUploadStatus();
+          if (error_type === 'multiple_voices') {
+            setState('multiple_voices');
+            alert(`Multiple Voices Detected\n\n${message}`);
+          } else {
+            setState('error', 'Verification error');
+            alert(`Error\n\n${message}`);
+          }
+          lockUI(false);
+          _currentVerifyJobId = null;
+        }
+      }, 300);
+    }
+
+    /* ------ Result display --------------------------------------------------------------------------------------------------------------------------------------------------- */
+    function showResult(speaker, score, detail, topMatch, runnerUp, margin, ttsUrl = null) {
+      const pct = (score * 100).toFixed(1);
+      const numericScore = parseFloat(pct);
+      const nameEl = document.getElementById('resultName');
+      const scoreEl = document.getElementById('resultScore');
+
+      const marginBlock = document.getElementById('marginInspectorBlock');
+      const runnerUpEl = document.getElementById('runnerUpVal');
+      const marginEl = document.getElementById('marginVal');
+
+      if (runnerUp && runnerUp.name) {
+        const ruScore = typeof runnerUp.score === 'number' ? runnerUp.score.toFixed(1) : runnerUp.score;
+        const mVal = typeof margin === 'number' ? margin.toFixed(1) : margin;
+
+        if (runnerUpEl) runnerUpEl.textContent = `${runnerUp.name} (${ruScore}%)`;
+        if (marginEl) marginEl.textContent = `+${mVal}%`;
+        if (marginBlock) marginBlock.classList.remove('hidden');
+      } else {
+        if (marginBlock) marginBlock.classList.add('hidden');
+      }
+
+      let color;
+
+      if (speaker === 'No Users Registered') {
+        color = 'var(--amber)';
+        nameEl.textContent = speaker;
+        scoreEl.textContent = 'Enroll a speaker first';
+        setConfGauge(0, color);
+        setState('error', speaker);
+
+      } else if (speaker === 'No Voice Detected') {
+        color = 'var(--rose)';
+        nameEl.textContent = 'No Voice Detected';
+        scoreEl.textContent = 'Please speak clearly into the microphone';
+        setConfGauge(0, color);
+        setState('silence');
+
+      } else if (speaker === 'Multiple Voices Detected') {
+        color = 'var(--rose)';
+        nameEl.textContent = 'Multiple Voices Detected';
+        scoreEl.textContent = 'Please ensure only one person is speaking, then try again';
+        setConfGauge(0, color);
+        setState('multiple_voices');
+
+      } else if (speaker === 'Unknown Speaker') {
+        color = 'var(--ruby)';
+        nameEl.textContent = 'Unknown / Access Denied';
+        setConfGauge(numericScore, color);
+        setState('denied');
+
+        if (detail === 'ambiguous_match') {
+          scoreEl.textContent = `${pct}%  (ambiguous match)`;
+          alert(
+            `Access Denied\n\n` +
+            `Too close to another enrolled profile.\n` +
+            `Best confidence: ${pct}% - try again in a quieter moment, or closer to the mic.`
+          );
+        } else {
+          scoreEl.textContent = `${pct}%  (below threshold)`;
+          alert(`Access Denied\n\nVoice not recognised.\nBest confidence: ${pct}%`);
+        }
+
+      } else {
+        color = 'var(--emerald)';
+        nameEl.textContent = speaker;
+        scoreEl.textContent = `${pct}%  match`;
+        setConfGauge(numericScore, color);
+
+        const scanArc = document.getElementById('verifyScanArc');
+        if (scanArc) scanArc.style.strokeDashoffset = '0';
+
+        setState('success', `Welcome, ${speaker}!`);
+        showCustomModal({ title: 'SPEAKER IDENTIFICATION', message: `Speaker: ${speaker}\nConfidence Level: ${pct}%` });
+
+        if (ttsUrl) {
+          try {
+            const audio = new Audio(ttsUrl);
+            audio.play().catch(err => console.log('[TTS] Audio playback notice:', err));
+          } catch (e) {
+            console.log('[TTS] Audio init notice:', e);
+          }
+        }
+      }
+
+      nameEl.style.color = color;
+      scoreEl.style.color = color;
+    }
+
+    /* ------ Speaker Panel & Card Grid --------------------------------------------------------------------------------------------------------------------- */
+    async function openSpeakerPanel() {
+      const overlay = document.getElementById('speakerPanelOverlay');
+      const searchInput = document.getElementById('speakerSearchInput');
+      if (searchInput) searchInput.value = '';
+
+      let speakers = [];
+      try {
+        const r = await fetch('/api/speakers');
+        const d = await r.json();
+        speakers = d.speakers || [];
+      } catch { /* leave empty */ }
+
+      _allSpeakersCache = speakers;
+      renderSpeakerList(speakers);
+      overlay.classList.remove('hidden');
+    }
+
+    function closeSpeakerPanel() {
+      document.getElementById('speakerPanelOverlay').classList.add('hidden');
+    }
+
+    function filterSpeakerCards(query) {
+      const q = (query || '').toLowerCase().trim();
+      const filtered = _allSpeakersCache.filter(s => s.toLowerCase().includes(q));
+      renderSpeakerList(filtered, true);
+    }
+
+    function generateSpectrogramSeal(name) {
+      let hash = 0;
+      for (let i = 0; i < name.length; i++) {
+        hash = (hash << 5) - hash + name.charCodeAt(i);
+        hash |= 0;
+      }
+      const bars = 5;
+      let html = '<div class="spectrogram-seal" title="Voice Frequency Seal">';
+      for (let b = 0; b < bars; b++) {
+        const val = Math.abs((hash >> (b * 3)) % 100) / 100;
+        const heightPct = Math.max(20, Math.floor(val * 100));
+        const opacity = (0.45 + val * 0.55).toFixed(2);
+        html += `<span class="spec-bar" style="height:${heightPct}%; opacity:${opacity};"></span>`;
+      }
+      html += '</div>';
+      return html;
+    }
+
+    function renderSpeakerList(speakers, isFiltering = false) {
+      const list = document.getElementById('speakerList');
+      const resetAllBtn = document.getElementById('resetEverythingBtn');
+      list.innerHTML = '';
+
+      if (speakers.length === 0) {
+        const msg = isFiltering ? 'No matching speakers found' : 'No speakers enrolled';
+        list.innerHTML = `<li class="speaker-item-empty" style="grid-column: 1 / -1;">${msg}</li>`;
+        if (!isFiltering) resetAllBtn.disabled = true;
+      } else {
+        resetAllBtn.disabled = false;
+        speakers.forEach(name => {
+          const li = document.createElement('li');
+          li.className = 'speaker-item-wrapper';
+          li.innerHTML = `
+          <div class="speaker-item">
+            <div class="speaker-display-row">
+              <span class="speaker-item-name">${escapeHtml(name)}</span>
+              <div class="speaker-item-actions">
+                <button class="speaker-item-rename" title="Rename ${escapeHtml(name)}">Rename</button>
+                <button class="speaker-item-remove" title="Remove ${escapeHtml(name)}">Remove</button>
+              </div>
+            </div>
+            <div class="speaker-edit-row hidden">
+              <input type="text" class="speaker-edit-input" value="${escapeHtml(name)}" autocomplete="off" />
+              <button class="speaker-edit-save" title="Save">Save</button>
+              <button class="speaker-edit-cancel" title="Cancel">Cancel</button>
+            </div>
+            <div class="speaker-edit-error hidden"></div>
+          </div>
+        `;
+
+          const displayRow = li.querySelector('.speaker-display-row');
+          const editRow = li.querySelector('.speaker-edit-row');
+          const editInput = li.querySelector('.speaker-edit-input');
+          const renameBtn = li.querySelector('.speaker-item-rename');
+          const removeBtn = li.querySelector('.speaker-item-remove');
+          const saveBtn = li.querySelector('.speaker-edit-save');
+          const cancelBtn = li.querySelector('.speaker-edit-cancel');
+          const errorEl = li.querySelector('.speaker-edit-error');
+
+          removeBtn.addEventListener('click', () => removeSpeaker(name, li));
+
+          renameBtn.addEventListener('click', () => {
+            displayRow.classList.add('hidden');
+            editRow.classList.remove('hidden');
+            errorEl.classList.add('hidden');
+            editInput.value = name;
+            editInput.focus();
+            editInput.select();
+          });
+
+          const cancelRename = () => {
+            displayRow.classList.remove('hidden');
+            editRow.classList.add('hidden');
+            errorEl.classList.add('hidden');
+          };
+
+          cancelBtn.addEventListener('click', cancelRename);
+
+          const performRename = async () => {
+            const newName = editInput.value.trim();
+            if (!newName) {
+              errorEl.textContent = 'Name cannot be empty.';
+              errorEl.classList.remove('hidden');
+              return;
+            }
+            if (newName === name) {
+              cancelRename();
+              return;
+            }
+
+            try {
+              const resp = await fetch('/api/speaker/rename', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ old_name: name, new_name: newName })
+              });
+              const data = await resp.json();
+              if (data.ok) {
+                showToast(`Renamed '${name}' to '${newName}'`, 'success', 3500);
+                openSpeakerPanel();
+              } else {
+                errorEl.textContent = data.error || 'Failed to rename speaker.';
+                errorEl.classList.remove('hidden');
+                showToast(data.error || 'Rename failed', 'error', 3500);
+              }
+            } catch (e) {
+              errorEl.textContent = 'Network error while renaming.';
+              errorEl.classList.remove('hidden');
+            }
+          };
+
+          saveBtn.addEventListener('click', performRename);
+          editInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') performRename();
+            if (e.key === 'Escape') cancelRename();
+          });
+
+          list.appendChild(li);
+        });
+      }
+    }
+
+    function escapeHtml(str) {
+      const div = document.createElement('div');
+      div.textContent = str;
+      return div.innerHTML;
+    }
+
+    async function removeSpeaker(name, liElement) {
+      try {
+        const r = await fetch('/api/speaker/remove', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name })
+        });
+        const d = await r.json();
+        if (d.ok) {
+          showToast(`Speaker '${name}' removed.`, 'info', 3500);
+          liElement.classList.add('removing');
+          liElement.addEventListener('animationend', () => {
+            liElement.remove();
+            _allSpeakersCache = _allSpeakersCache.filter(s => s !== name);
+            const remaining = document.querySelectorAll('#speakerList .speaker-item-wrapper');
+            if (remaining.length === 0) {
+              renderSpeakerList([]);
+            }
+          });
+        } else {
+          showToast(d.error || 'Could not remove speaker.', 'error', 3500);
+          alert(d.error || 'Could not remove speaker.');
+        }
+      } catch {
+        alert('Failed to remove speaker - could not reach server.');
+      }
+    }
+
+    async function resetEverything() {
+      if (!await showCustomModal({ title: 'Confirmation Required', message: 'Delete all of YOUR enrolled speaker profiles?\nThis cannot be undone.', confirmMode: true })) return;
+
+      try {
+        const r = await fetch('/api/reset', { method: 'POST' });
+        const d = await r.json();
+        const nameEl = document.getElementById('resultName');
+        const scoreEl = document.getElementById('resultScore');
+        nameEl.textContent = '-';
+        nameEl.style.color = 'var(--text)';
+        scoreEl.textContent = '-';
+        scoreEl.style.color = 'var(--amber)';
+        setConfGauge(0, 'var(--accent)');
+        const marginBlock = document.getElementById('marginInspectorBlock');
+        if (marginBlock) marginBlock.classList.add('hidden');
+        const waveContainer = document.getElementById('waveformPreviewContainer');
+        if (waveContainer) waveContainer.classList.add('hidden');
+        setState('idle', 'Database cleared.');
+        closeSpeakerPanel();
+        showToast('All speaker profiles cleared.', 'info', 4000);
+        alert('All voiceprint profiles have been deleted.');
+      } catch {
+        alert('Reset failed - could not reach server.');
+      }
+    }
+
+    async function populateTestingModeSpeakers() {
+      const sel = document.getElementById('expectedSpeakerSelect');
+      if (!sel) return;
+      try {
+        const res = await fetch('/api/speakers');
+        const data = await res.json();
+        const speakers = data.speakers || [];
+        const currentVal = sel.value;
+        sel.innerHTML = '<option value="">-- None (Unlabeled) --</option>';
+        speakers.forEach(name => {
+          const opt = document.createElement('option');
+          opt.value = name;
+          opt.textContent = name;
+          sel.appendChild(opt);
+        });
+        if (currentVal && speakers.includes(currentVal)) {
+          sel.value = currentVal;
+        }
+      } catch (err) {
+        console.error('Error loading speakers for testing mode:', err);
+      }
+    }
+
+    document.getElementById('speakerPanelClose').addEventListener('click', closeSpeakerPanel);
+    document.getElementById('resetEverythingBtn').addEventListener('click', resetEverything);
+
+    document.getElementById('speakerPanelOverlay').addEventListener('click', function (e) {
+      if (e.target === this) closeSpeakerPanel();
+    });
+
+    /* ------ Init --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- */
+    if (REMOTE_DEPLOYMENT) {
+      const enrollBtn = document.getElementById('enrollBtn');
+      const verifyBtn = document.getElementById('verifyBtn');
+      const verifyOrs = document.querySelectorAll('.verify-or');
+      const scanRing = document.querySelector('.scan-ring-container');
+      if (enrollBtn) enrollBtn.classList.add('hidden');
+      if (verifyBtn) verifyBtn.classList.add('hidden');
+      verifyOrs.forEach(el => el.classList.add('hidden'));
+      if (scanRing) scanRing.classList.add('hidden');
+    }
+
+    initTheme();
+    setState('idle');
+    populateTestingModeSpeakers();
+
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/static/sw.js')
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.error('SW registration failed:', err));
+      });
+    }
+  </script>
+</body>
+
+
+</html>
+

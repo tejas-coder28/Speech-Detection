@@ -1,0 +1,49 @@
+
+1. Copy the project folder from Drive onto the new laptop (e.g., to Desktop). Skip `venv311/` and `__pycache__/` — you'll rebuild those fresh. Make sure `database/`, `recordings/`, `users.json`, `pretrained_models/`, all `.py` files, `templates/`, and `requirements.txt` are all there.
+
+2. Check what Python versions are already on the laptop. Press `Win + R`, type `cmd`, hit Enter, then run:
+   `py -0`
+   This lists every Python version Windows knows about — useful since IT-issued laptops sometimes already have a different version (like 3.12 or 3.13) installed. If `3.11` shows up anywhere in that list, skip to step 5 — any 3.11.x patch works, it doesn't need to be exactly one specific number.
+
+3. If no 3.11 shows up, download **Python 3.11.9**:
+   https://www.python.org/downloads/release/python-3119/
+   Scroll down, click **"Windows installer (64-bit)"**, run it, and on the very first screen, **tick "Add python.exe to PATH"** before clicking Install.
+
+4. Close and reopen `cmd`, run `py -0` again to confirm 3.11 now shows up.
+
+5. Open the project folder in File Explorer, click the address bar, type `cmd`, hit Enter.
+
+6. Create the virtual environment, explicitly targeting 3.11 (important if multiple Python versions are on the machine — `py -3.11` picks 3.11 specifically instead of leaving it to chance):
+   `py -3.11 -m venv venv311`
+
+7. Activate it:
+   `venv311\Scripts\activate`
+   You'll see `(venv311)` appear once it's active. From here on, plain `python`/`pip` commands automatically use this environment — you don't need `py -3.11` anymore.
+
+8. Install everything the project needs:
+   `pip install -r requirements.txt`
+
+9. If `pip` isn't recognized at all ("'pip' is not recognized as an internal or external command" — a common Windows error), use this instead; it works even when bare `pip` doesn't, since it runs through Python directly:
+   `python -m pip install -r requirements.txt`
+
+10. If install hangs, times out, or throws SSL/certificate errors — likely if you're on office wifi with a restrictive proxy — first try:
+    `python -m pip install --upgrade pip`
+    then rerun step 8. If it still can't reach PyPI, ask IT for the proxy address and run:
+    `pip install --proxy http://proxy-address:port -r requirements.txt`
+
+11. If everything installs except `pyaudio` specifically (separate, common Windows issue), run these two instead:
+    `pip install pipwin`
+    `pipwin install pyaudio`
+
+12. Turn on mic access: Settings → Privacy & Security → Microphone → make sure "Let desktop apps access your microphone" is switched on.
+
+13. Run the app:
+    `python app.py`
+
+14. Open a browser and go to:
+    `http://127.0.0.1:5000`
+    If Windows pops up a firewall warning the first time, click **Allow**.
+
+15. Log in with your existing account. If `users.json` didn't carry over properly, register a new one.
+
+16. pip show pyaudio - to check ,if not 'WARNING: Package(s) not found: pyaudio'

@@ -1,0 +1,176 @@
+/* ==========================================================================
+   Voiceprint Identity System - Responsive Layout & Touch Optimizations
+   ========================================================================== */
+
+/* Global responsive layout rules */
+html, body {
+  width: 100%;
+  max-width: 100vw;
+  overflow-x: hidden;
+}
+
+/* Ensure touch targets meet minimum 44px height standards on touch devices */
+button,
+.btn,
+.btn-primary,
+.btn-verify,
+.btn-ghost,
+.btn-danger,
+.login-btn,
+.reg-btn,
+.upload-enroll-label,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+select {
+  min-height: 44px;
+  touch-action: manipulation;
+}
+
+/* Mobile & Narrow Viewports (<= 768px) */
+@media screen and (max-width: 768px) {
+  body {
+    padding: 16px 12px 32px;
+    align-items: flex-start;
+  }
+
+  .app {
+    max-width: 100%;
+    width: 100%;
+    gap: 0;
+  }
+
+  .login-wrap,
+  .reg-wrap {
+    max-width: 100%;
+    width: 100%;
+    padding: 8px 4px;
+  }
+
+  .login-card,
+  .reg-card {
+    padding: 28px 20px 24px;
+    border-radius: 20px;
+  }
+
+  .card {
+    padding: 20px 18px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+  }
+
+  .header {
+    padding: 8px 4px 12px;
+  }
+
+  .header-title,
+  h1,
+  .header h1 {
+    font-size: clamp(1.3rem, 6vw, 1.75rem) !important;
+    white-space: normal !important;
+    word-break: break-word;
+    text-align: center;
+  }
+
+  .status-bar {
+    width: 100%;
+    max-width: 100%;
+    padding: 8px 12px;
+    font-size: 0.8rem;
+  }
+
+  /* Single column layout for form input rows */
+  .row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .row input[type="text"],
+  .row .btn-primary {
+    width: 100%;
+  }
+
+  .upload-enroll-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .upload-enroll-label {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .btn-verify {
+    width: 100%;
+    padding: 14px 12px;
+  }
+
+  /* Stacked speaker grid */
+  .speaker-list {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
+    gap: 8px !important;
+    padding: 8px 0 !important;
+  }
+
+  .scan-ring-container {
+    width: 70px;
+    height: 70px;
+    margin-bottom: 12px;
+  }
+
+  .conf-gauge-svg {
+    width: 95px;
+    height: 95px;
+  }
+
+  /* Result display stacked cleanly */
+  .result-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .result-key {
+    min-width: unset;
+  }
+
+  .toast-container {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+    max-width: calc(100vw - 20px);
+  }
+
+  .toast-item {
+    font-size: 0.8rem;
+    padding: 10px 12px;
+  }
+}
+
+/* Extra Small Screens (<= 480px) */
+@media screen and (max-width: 480px) {
+  body {
+    padding: 10px 8px 24px;
+  }
+
+  .login-card,
+  .reg-card,
+  .card {
+    padding: 20px 14px;
+    border-radius: 16px;
+  }
+
+  .login-title,
+  .reg-title {
+    font-size: 1.6rem;
+  }
+
+  .btn,
+  .login-btn,
+  .reg-btn {
+    font-size: 0.84rem;
+    padding: 12px;
+  }
+}

@@ -1,140 +1,211 @@
-# 🎙️ Voiceprint Identity System
+<div align="center">
 
-An AI-powered voice biometric authentication and speaker identification web application. Built with **Flask**, **SpeechBrain (ECAPA-TDNN)**, **PyTorch**, and modern **PWA (Progressive Web App)** frontend technologies, the system extracts 192-dimensional acoustic speaker embeddings to perform 1-to-N voice identification with high precision.
+# Voiceprint Identity System
 
----
+<p>AI-powered voice biometric authentication and 1-to-N speaker identification platform powered by ECAPA-TDNN deep neural embeddings</p>
 
-## 📌 Features
+<img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white" />
+<img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=flat-square&logo=pytorch&logoColor=white" />
+<img src="https://img.shields.io/badge/SpeechBrain-ECAPA--TDNN-8b5cf6?style=flat-square" />
+<img src="https://img.shields.io/badge/Flask-000000?style=flat-square&logo=flask&logoColor=white" />
+<img src="https://img.shields.io/badge/License-MIT-8b5cf6?style=flat-square" />
+<img src="https://img.shields.io/github/last-commit/tejas-coder28/Speech-Detection?style=flat-square&color=8b5cf6" />
 
-### 🔐 Voice Biometrics & Authentication
-- **Multi-Tenant User Isolation**: Strict per-account data isolation (`database.safe_user_id()`). Each account maintains independent database profiles, recordings folders, and verification logs with zero cross-account data leakage.
-- **Voice Enrollment**: Enrolls speakers using three 5-second audio segments (15 seconds total) to build a robust 192-D acoustic voiceprint.
-- **1-to-N Speaker Verification**: Identifies unknown speakers against all enrolled voice profiles using Cosine Similarity matching against tuned confidence thresholds.
-- **Audio Integrity Checks**: Integrated Voice Activity Detection (VAD), silence filtering, and multi-speaker detection to prevent noisy or corrupted profile enrollments.
-- **Dual Recording Paths**:
-  - **Desktop Hardware Recording**: Direct server-side PyAudio capture for local desktop deployments.
-  - **Mobile Browser Recording**: HTML5 `MediaRecorder` API capture with stream buffering for smartphones and mobile PWA viewports.
-  - **File Upload Support**: Accepts uploaded audio clips (`.wav`, `.mp3`, `.m4a`, `.flac`, `.ogg`, `.webm`, `.mp4`).
-
-### 📱 Progressive Web App (PWA) & UI Design
-- **Installable Mobile PWA**: Native app-like experience with Web App Manifest, Service Worker shell caching, standalone display mode, and custom app icons.
-- **Modern Glassmorphism UI**: Obsidian gradient mesh styling with glowing neon accents, live visualizer pulse waves, circular confidence gauges, and real-time audio waveform previews.
-- **Responsive Layout**: Touch-friendly interface optimized for screen widths ranging from mobile phones to desktop displays.
-
-### 📊 Analytics & Diagnostic Tools
-- **Roster & Accuracy Analytics**: Interactive dashboard (`/dashboard/stats`) tracking total enrolled speakers, verification runs, success/failure counts, overall accuracy, daily accuracy trends, and per-speaker test attempts using **Chart.js**.
-- **Diagnostic Inspection**: Displays confidence scores, runner-up identities, and margin thresholds for testing and tuning.
-- **Testing Mode**: Access via `/?test=1` to attach ground-truth speaker labels during evaluation runs.
-
-### 🌐 Cloud & Remote Deployment Ready
-- **Client-Side TTS Playback**: Reworked Text-to-Speech (pyttsx3 `save_to_file`) engine that renders audio greetings to `/static/tts/` for HTML `<audio>` playback on headless remote servers.
-- **Remote Flag (`REMOTE_DEPLOYMENT`)**: Environment variable to gracefully hide server hardware microphone controls when deployed to cloud hosts (Heroku, Render, AWS, Railway), defaulting to audio file uploads and mobile browser recording.
-- **Production WSGI**: Configured with **Gunicorn** for production server execution.
+</div>
 
 ---
 
-## 🛠️ Tech Stack
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0a1428,50:8b5cf6,100:0a1428&height=48&section=header&text=🎓%20ABOUT&fontSize=22&fontColor=ffffff&fontAlignY=50" width="100%" />
 
-- **Backend**: Python 3.11, Flask, Gunicorn, PyTorch, [SpeechBrain](https://speechbrain.github.io/) (`spkrec-ecapa-voxceleb`), PyAV, SoundFile, SciPy, NumPy, NoiseReduce, PyTTSx3
-- **Frontend**: Vanilla HTML5, Custom CSS3 Design System (Vanilla CSS with CSS Variables & Glassmorphism), JavaScript (ES6+), Chart.js 4.4, MediaRecorder API, Service Worker
-- **Storage & Security**: Password hashing (`werkzeug.security`), isolated `.pkl` embedding databases, CSV logging
+Traditional authentication factors such as passwords and PINs are increasingly vulnerable to phishing, brute-force attacks, and credential theft, while physical tokens introduce user friction. This platform solves the challenge of frictionless identity verification by analyzing the unique physical geometry of human vocal tracts through deep acoustic speaker recognition models. Built with SpeechBrain's state-of-the-art ECAPA-TDNN architecture, the application extracts 192-dimensional acoustic voice embeddings from speech signals, applies spectral denoising and voice activity detection, and performs real-time 1-to-N speaker identification and zero-trust authentication through an installable Progressive Web App.
 
 ---
 
-## 📂 Project Structure
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0a1428,50:8b5cf6,100:0a1428&height=48&section=header&text=✨%20FEATURES&fontSize=22&fontColor=ffffff&fontAlignY=50" width="100%" />
 
-```text
-Speech Detection/
-├── app.py                  # Main Flask web application & REST API endpoints
-├── model.py                # SpeechBrain ECAPA-TDNN neural network loader
-├── verify.py               # Cosine similarity identification & threshold logic
-├── register.py             # Multi-segment voice enrollment pipeline
-├── database.py             # Per-user isolated speaker storage handler
-├── audio.py                # Hardware microphone recording & signal checks
-├── tts.py                  # Text-to-Speech greeting file generator
-├── vad.py                  # Voice Activity Detection (VAD) module
-├── denoise.py              # Audio noise reduction & filtering
-├── analyze_test_log.py     # Verification log parsing & statistical analytics
-├── requirements.txt        # Python package dependencies
-├── .gitignore              # Excludes sensitive user data, audio clips, and databases
-├── static/
-│   ├── css/style.css       # Responsive CSS stylesheet & design tokens
-│   ├── manifest.json       # PWA web manifest
-│   ├── sw.js               # Service worker shell caching script
-│   ├── icon-192.png        # PWA app icon (192x192)
-│   ├── icon-512.png        # PWA app icon (512x512)
-│   └── tts/                # Generated audio greeting cache
-└── templates/
-    ├── index.html          # Main speaker recognition dashboard
-    ├── login.html          # Authentication login screen
-    ├── register.html       # User signup screen
-    └── stats.html          # Analytics dashboard
+- **ECAPA-TDNN Neural Embeddings**: Computes 192-dimensional acoustic speaker embeddings via SpeechBrain's VoxCeleb-pretrained deep neural network.
+- **Real-Time 1-to-N Identification**: Evaluates speech against all registered voiceprints using cosine similarity comparison and calibrated confidence thresholds.
+- **Signal Denoising & Voice Activity Detection**: Preprocessing pipeline integrating Voice Activity Detection (`vad.py`) and spectral noise reduction (`denoise.py` via `noisereduce`) to strip silence and ambient room noise.
+- **Multi-Tenant User Isolation**: Strict per-account data segregation ensuring registered voice profiles, audio samples, and verification logs remain fully isolated.
+- **Installable Progressive Web App (PWA)**: Modern glassmorphic interface with Service Worker caching, audio visualizer waveform canvas, and mobile-friendly `MediaRecorder` support.
+- **Biometric Analytics Dashboard**: Dedicated statistics console (`/stats`) tracking total enrolled speakers, verification attempts, daily accuracy curves, and confusion metrics powered by Chart.js.
+
+---
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0a1428,50:8b5cf6,100:0a1428&height=48&section=header&text=⚡%20TECH%20STACK&fontSize=22&fontColor=ffffff&fontAlignY=50" width="100%" />
+
+| Layer | Technology |
+|---|---|
+| **Deep Learning & Acoustic Modeling** | PyTorch, SpeechBrain (`spkrec-ecapa-voxceleb` ECAPA-TDNN) |
+| **Audio Signal Processing** | SciPy, NumPy, SoundFile, PyAV, NoiseReduce |
+| **Web Backend Framework** | Python 3.10+, Flask, Gunicorn |
+| **Speech Synthesis & VAD** | PyTTSx3 (Offline Text-to-Speech), Web Audio VAD |
+| **Frontend Client & PWA** | HTML5, CSS3 (Glassmorphism, Neon Pulse Visualizers), JavaScript (ES6+), Chart.js 4.4, Service Workers |
+| **Data Persistence & Security** | Werkzeug Security (Password Hashing), SQLite / Isolated Embedding Stores |
+
+---
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0a1428,50:8b5cf6,100:0a1428&height=48&section=header&text=🏗️%20ARCHITECTURE&fontSize=22&fontColor=ffffff&fontAlignY=50" width="100%" />
+
+```mermaid
+flowchart TD
+    subgraph Ingestion ["Audio Input Channels"]
+        A1["Browser Microphone (MediaRecorder)"] --> B["app.py (Upload / Buffer)"]
+        A2["Hardware Microphone (PyAudio)"] --> B
+        A3["Audio File Upload (.wav, .mp3, .m4a)"] --> B
+    end
+
+    subgraph Preprocessing ["Signal Conditioning"]
+        B --> C1["denoise.py (Spectral Noise Reduction)"]
+        C1 --> C2["vad.py (Voice Activity Detection & Silence Trim)"]
+    end
+
+    subgraph DeepLearning ["ECAPA-TDNN Neural Network"]
+        C2 --> D["model.py (SpeechBrain Pretrained Network)"]
+        D --> E["Extract 192-D L2-Normalized Embedding"]
+    end
+
+    subgraph Matching ["Verification & Authentication"]
+        E --> F["verify.py (Cosine Similarity vs. Stored Voiceprints)"]
+        F --> G{"Similarity >= Threshold?"}
+        G -- Match --> H1["Authenticated Identity (Speaker Name & Confidence Score)"]
+        G -- No Match --> H2["Unknown / Impostor Rejected"]
+    end
+
+    subgraph Presentation ["Dashboard & Reporting"]
+        H1 --> I["Interactive Flask PWA Client"]
+        H2 --> I
+        I --> J["/stats (Chart.js Accuracy Curves & Audit Logs)"]
+    end
 ```
 
 ---
 
-## 🚀 Getting Started
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0a1428,50:8b5cf6,100:0a1428&height=48&section=header&text=🚀%20GETTING%20STARTED&fontSize=22&fontColor=ffffff&fontAlignY=50" width="100%" />
 
 ### Prerequisites
-- Python 3.11+
-- Virtualenv (`python -m venv venv311`)
+- Python 3.10 or higher
+- Git
+- Microphone access (for live recording)
+- FFmpeg installed on system path (recommended for multi-format audio decoding)
 
-### Local Setup
+### 1. Clone the Repository
+```bash
+git clone https://github.com/tejas-coder28/Speech-Detection.git
+cd Speech-Detection
+```
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/your-username/voiceprint-identity-system.git
-   cd voiceprint-identity-system
-   ```
+### 2. Environment Setup & Dependencies
+```bash
+# Create and activate virtual environment
+python -m venv venv
 
-2. **Create and activate virtual environment**:
-   ```bash
-   python -m venv venv311
-   # On Windows:
-   .\venv311\Scripts\activate
-   # On macOS/Linux:
-   source venv311/bin/activate
-   ```
+# Windows (Command Prompt / PowerShell)
+.\venv\Scripts\activate
 
-3. **Install dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+# macOS / Linux
+source venv/bin/activate
 
-4. **Run the Flask application**:
-   ```bash
-   python app.py
-   ```
+# Install required packages
+pip install -r requirements.txt
+```
 
-5. **Access the Web App**:
-   Open `http://localhost:5000` in your web browser. Create an account to log in and start enrolling voice profiles.
+### 3. Environment Variables
+Copy the template configuration file:
+```bash
+cp .env.example .env
+```
+Default parameters in `.env`:
+```env
+FLASK_APP=app.py
+FLASK_ENV=development
+SECRET_KEY=your_secret_key_here
+PORT=5000
+REMOTE_DEPLOYMENT=0
+TORCH_HOME=./pretrained_models
+```
 
----
+### 4. Run the Web Application
+```bash
+# Direct development execution
+python app.py
 
-## ☁️ Remote Cloud Deployment
-
-When deploying to cloud platforms (such as Render, Heroku, Railway, or AWS):
-
-1. **Set Environment Variables**:
-   ```bash
-   SECRET_KEY="your-strong-production-secret-key"
-   REMOTE_DEPLOYMENT="true"
-   ```
-
-2. **Start with Gunicorn**:
-   ```bash
-   gunicorn --bind 0.0.0.0:5000 app:app
-   ```
-
----
-
-## 🔒 Privacy & Security
-
-- **Data Isolation**: User data, voice profiles, and verification logs are kept strictly separated by account ID.
-- **Git Exclusions**: All sensitive user directories (`database/`, `recordings/`, `test_logs/`, `users.json`), raw audio files (`*.wav`), and model checkpoints are excluded via `.gitignore` to prevent committing private biometric data to source control.
+# Or via Gunicorn (WSGI)
+gunicorn app:app -b 127.0.0.1:5000
+```
+Open `http://127.0.0.1:5000` in your web browser to launch the voiceprint identity console.
 
 ---
 
-## 📄 License
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0a1428,50:8b5cf6,100:0a1428&height=48&section=header&text=📁%20PROJECT%20STRUCTURE&fontSize=22&fontColor=ffffff&fontAlignY=50" width="100%" />
 
-This project is open-source and available under the [MIT License](LICENSE).
+```
+Speech-Detection/
+├── docs/
+│   └── assets/                   # Architecture charts & UI screenshots
+├── static/
+│   ├── css/style.css             # Glassmorphism styling & visualizer themes
+│   ├── icon-192.png              # PWA mobile app icon
+│   ├── icon-512.png              # PWA high-res app icon
+│   ├── manifest.json             # Web App Manifest for mobile installation
+│   └── sw.js                     # Service Worker for offline PWA caching
+├── templates/
+│   ├── index.html                # Main voice biometric dashboard UI
+│   ├── login.html                # Multi-tenant account authentication
+│   ├── register.html             # User registration interface
+│   └── stats.html                # Accuracy metrics & historical verification graphs
+├── tests/
+│   ├── test_deletion.py          # Profile lifecycle tests
+│   └── test_model.py             # Model inference & embedding tests
+├── app.py                        # Flask server, route controllers & API endpoints
+├── audio.py                      # Hardware microphone capture & audio verification
+├── database.py                   # Multi-tenant user data store & embedding persistence
+├── denoise.py                    # Spectral gating & noise reduction utilities
+├── model.py                      # SpeechBrain ECAPA-TDNN model loader
+├── register.py                   # Multi-segment enrollment pipeline
+├── verify.py                     # Cosine similarity identification & thresholding
+├── vad.py                        # Voice Activity Detection module
+├── tts.py                        # Text-to-speech audio feedback generator
+├── requirements.txt              # Python runtime dependencies
+├── .env.example                  # Environment configuration template
+├── LICENSE                       # MIT License
+└── README.md                     # Project documentation
+```
+
+---
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0a1428,50:8b5cf6,100:0a1428&height=48&section=header&text=📸%20SCREENSHOTS&fontSize=22&fontColor=ffffff&fontAlignY=50" width="100%" />
+
+### 1. Voice Biometric Verification Interface
+*Real-time speaker identification console featuring live waveform visualizer and confidence gauge.*
+
+![Voice Verification Console](/docs/assets/01_voiceprint_verification_ui.png)
+> *TODO: Capture screenshot of the main verification console at `http://127.0.0.1:5000` and save to `/docs/assets/01_voiceprint_verification_ui.png`.*
+
+### 2. Multi-Segment Voice Enrollment
+*Speaker enrollment workflow capturing three high-fidelity audio samples to synthesize the 192-D voiceprint.*
+
+![Voice Enrollment Screen](/docs/assets/02_voice_enrollment_screen.png)
+> *TODO: Capture screenshot of the enrollment modal and save to `/docs/assets/02_voice_enrollment_screen.png`.*
+
+### 3. Biometric Analytics & Audit Statistics
+*Interactive analytics dashboard tracking identification accuracy curves and per-speaker test attempts.*
+
+![Biometric Analytics Dashboard](/docs/assets/03_biometric_analytics_stats.png)
+> *TODO: Capture screenshot of `http://127.0.0.1:5000/stats` and save to `/docs/assets/03_biometric_analytics_stats.png`.*
+
+---
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0a1428,50:8b5cf6,100:0a1428&height=48&section=header&text=🔮%20FUTURE%20IMPROVEMENTS&fontSize=22&fontColor=ffffff&fontAlignY=50" width="100%" />
+
+- **Liveness & Anti-Spoofing Detection**: Integrate a deepfake acoustic classifier to block synthetic voice spoofing and replay attacks.
+- **HNSW Vector Indexing (Qdrant / Milvus)**: Migrate from in-memory cosine matching to approximate nearest-neighbor vector search for scaling to 100,000+ enrolled identities.
+- **WebAssembly (WASM) Edge Preprocessing**: Compile VAD and feature extraction routines to WebAssembly for edge filtering directly in client browsers.
+
+---
+
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:0a1428,50:8b5cf6,100:0a1428&height=48&section=header&text=👤%20AUTHOR&fontSize=22&fontColor=ffffff&fontAlignY=50" width="100%" />
+
+**Tejas Muralidhar**
+- GitHub: [@tejas-coder28](https://github.com/tejas-coder28)
+- LinkedIn: [Tejas Muralidhar](https://www.linkedin.com/in/tejasmuralidhar)
